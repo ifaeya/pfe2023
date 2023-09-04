@@ -1,0 +1,70 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block body %}
+	<h1 class="achat-title">Réserver des devises</h1>
+{% if error %}
+		<div class="alert alert-danger" role="alert">
+			<p id="error-message" class="error-message">{{ error }}</p>
+		</div>
+	{% endif %}
+	<form method="post" action="{{ path('app_reserver') }}" autocomplete="off">
+
+   
+   	<div>
+    </div>
+	<h2 class="eyaa">Les devises disponibles</h2>
+<ul class="eyat">
+{% for devise in devises %}
+    <li>
+      <img src="/images/{{ devise.image }}" alt="{{ devise.code }}" width="40" height="40" class="currency-icon">
+      {{ devise.code }} 
+     
+ 
+    </li>
+   
+  {% endfor %}
+</ul>
+
+    <br>
+        <div>
+			<label for="code">Devises du client :</label>
+			<select id="devise" name="code" class="form-control">
+				<option value="">Choisir la devise</option>
+				{% for devise in devises %}
+
+					<option value="{{ devise.code }}">
+                    
+						{{ devise.libelle }}
+						({{ devise.code }})
+					</option>
+
+				{% endfor %}
+			</select>
+
+		</div>
+		<br>
+
+		<div>
+			<label for="montant">Montant à échanger :</label>
+			<input type="number" id="montant" name="montant" required>
+		</div>
+
+			   <div class="form-group">
+           <label for="documentIds">Select Documents:</label>
+        {% for document in documents %}
+            <div>
+                <input type="checkbox" id="{{ 'document_' ~ loop.index }}" name="documentIds[]" value="{{ document.id }}">
+                <label for="{{ 'document_' ~ loop.index }}">{{ document.libelle }}</label>
+            </div>
+        {% endfor %}
+        <br>
+        </div>
+		
+
+		<br>
+		<button type="submit1">Réserver</button>
+	</form>
+
+	
+
+{% endblock %}

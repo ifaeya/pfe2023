@@ -1,0 +1,17 @@
+
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Edit Operation{% endblock %}
+
+{% block body %}
+   {{ form_start(form) }}
+{{ form_widget(form) }}
+
+{{ form_start(mouvementForm) }}
+{{ form_widget(mouvementForm) }}
+
+<button type="submit" class="btn btn-primary">Acheter</button>
+
+{{ form_end(mouvementForm) }}
+{{ form_end(form) }}
+{% endblock %}

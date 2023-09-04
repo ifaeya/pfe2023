@@ -1,0 +1,247 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Reservation index
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+{% endblock %}
+
+{% block body %}
+
+
+	<h1 class="vente-title">Vos réservations</h1>
+
+	<section id="features" class="features">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table id="my-table" class="table table-striped table-bordered table-hover">
+					<div class="table-header">Résultats pour "Derniers enregistrés"</div>
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Devises</th>
+							<th>Montant</th>
+                            							<th>Documents</th>
+
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for reservation in reservations %}
+							{% if not reservation.confirmation %}
+								<tr>
+									<td>{{ reservation.Createdat|date('Y-m-d H:i:s') }}</td>
+									<td>{{ reservation.devises.code }}</td>
+									<td>{{ reservation.montant }}</td>
+<td>
+    <ul>
+        {% for document in reservation.documents %}
+            <li>
+                {{ document.libelle }}
+                {% if document.isImage() or document.isPDF() %}
+                    <a href="{{ path('app_download_document', {'id': document.id}) }}" class="btn btn-sm " title="Télécharger">
+                        <i class="fa fa-download"></i> 
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</td>
+
+
+
+
+
+									<td>
+										<div class="hidden-sm hidden-xs action-buttons">
+											{% if reservation.confirmation %}
+												<p class="green">Confirmée</p>
+											{% else %}
+												<p class="red">En attente</p>
+												<a href="{{ path('app_annuler_reservation', {'id': reservation.id}) }}" class="cancel-button" title="Annuler">
+													<button class="btn-cancel">Annuler</button>
+												</a>
+											{% endif %}
+										</div>
+									</td>
+								</tr>
+							{% endif %}
+						{% else %}
+							<tr>
+								<td colspan="4">Aucune réservation en attente.</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<!-- Ajout d'un espace entre les deux tableaux -->
+	<div class="spacer"></div>
+	<div class="confirme-container">
+		<h3 class="confirme-title">Vos réservations confirmées</h3>
+	</div>
+
+	<!-- Tableau des réservations confirmées -->
+	<section id="confirmed-reservations" class="features">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table id="confirmed-table" class="table table-striped table-bordered table-hover">
+					<div class="table-header">Résultats pour "Réservations confirmées"</div>
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Devises</th>
+							<th>Montant</th>
+							<th>Documents</th>
+							<th>Actions</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						{% for reservation in reservations %}
+							{% if reservation.confirmation %}
+								<tr>
+									<td>{{ reservation.Createdat|date('Y-m-d H:i:s') }}</td>
+									<td>{{ reservation.devises.code }}</td>
+									<td>{{ reservation.montant }}</td>
+									<td>
+										{% for document in reservation.documents %}
+											{{ document.libelle }}
+											{# assuming Document entity has a "name" property #}
+											{# You can display other properties of the Document entity here #}
+										<br>
+									{% endfor %}
+									</td>
+										<td>
+											<div class="hidden-sm hidden-xs action-buttons"> <a href="{{ path('app_reservation_show', {'id': reservation.id}) }}" class="red" title="supprimer">
+												<button>
+													Supprimer
+												</button>
+											</a>
+										</td>
+									</td>
+								</tr>
+							{% endif %}
+						{% else %}
+							<tr>
+								<td colspan="3">Aucune réservation confirmée.</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Add a button to access the list of confirmed reservations -->
+		{% set reservationsConfirmees = [] %}
+		{# Créer un tableau vide pour stocker les réservations confirmées #}
+		{% for reservation in reservations %}
+			{% if reservation.confirmation %}
+				{% set reservationsConfirmees = reservationsConfirmees|merge([reservation]) %}
+				{# Ajouter la réservation confirmée au tableau #}
+			{% endif %}
+		{% endfor %}
+
+		{% set maxConfirmationLength = 100 %}
+		{# Définir la longueur maximale de la colonne 'confirmation' dans la base de données #}
+		<a href="{{ path('app_reservations_confirmees') }}" class="btn btn-primary">
+			Liste des réservations confirmées
+			{% if reservationsConfirmees|length > 0 %}({{ reservationsConfirmees|length }})
+			{% endif %}
+		</a>
+
+	</section>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+	<script>
+		$(document).ready(function () {
+$('#my-table').DataTable({
+"language": {
+"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+},
+"lengthMenu": [
+[
+10, 25, 50, -1
+],
+[
+10, 25, 50, "Tout"
+]
+],
+"pageLength": 25,
+"order": [
+[0, "desc"]
+],
+"dom": 'lBfrtip',
+"buttons": [
+{
+extend: 'pdfHtml5',
+className: 'btn btn-sm btn-danger',
+text: '<i class="fa fa-file-pdf-o"></i> ',
+title: 'Export PDF',
+exportOptions: {
+columns: ':visible'
+}
+},
+{
+extend: 'excelHtml5',
+className: 'btn btn-sm btn-success',
+text: '<i class="fa fa-file-excel-o"></i> ',
+title: 'Export Excel',
+exportOptions: {
+columns: ':visible'
+}
+},
+{
+extend: 'csv',
+className: 'btn btn-primary btn-sm',
+text: '<i class="fa fa-database"></i> ',
+title: 'Export CSV',
+exportOptions: {
+columns: ':visible'
+}
+},
+{
+extend: 'copy',
+className: 'btn btn-sm btn-primary',
+text: '<i class="fa fa-copy"></i> ',
+title: 'Copy',
+exportOptions: {
+columns: ':visible'
+}
+}, {
+extend: 'print',
+className: 'btn btn-primary btn-sm',
+text: '<i class="fa fa-print"></i> ',
+title: 'Print',
+exportOptions: {
+columns: ':visible'
+}
+}, {
+text: '<i class="fa fa-file-text"></i> ',
+className: 'btn btn-primary btn-sm my-class',
+titleAttr: 'Export TXT',
+action: function (e, dt, node, config) {
+var data = dt.buttons.exportData();
+$.fn.dataTable.fileSave(new Blob([data.body.join("\n")]), 'table.txt');
+}
+}
+],
+"pagingType": "full_numbers" // Ajout de la pagination
+});
+
+$('button').mouseover(function () {
+var title = $(this).attr('title');
+$(this).attr('data-toggle', 'tooltip').attr('title', title).tooltip('show');
+}).mouseout(function () {
+$(this).attr('data-toggle', 'tooltip').attr('title', '').tooltip('hide');
+});
+});
+	</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% block stylesheets %}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<style>
+		/* personnalisation du design */
+		body {
+			padding: 20px;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture */
+		}
+
+		h1 {
+			margin-bottom: 30px;
+			text-align: center;
+			font-size: 3rem;
+			font-weight: bold;
+			color: #0d0f60;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture */
+		}
+
+		.list-group-item {
+			background-color: #f8f9fa;
+			border-color: #dee2e6;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			transition: all 0.2s ease-in-out;
+			font-size: 1.3rem; /* Taille de police pour les éléments de la liste */
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture */
+		}
+
+		.list-group-item:hover {
+			transform: scale(1.03);
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+		}
+
+		.desactive {
+			background-color: #e8ae00;
+			color: #000000;
+		}
+
+		.high-value {
+			background-color: #ffc107;
+			color: #212529;
+		}
+
+		.operation-info {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.operation-date {
+			flex: 1 0 200px;
+		}
+
+		.operation-type {
+			flex: 1 0 200px;
+			text-align: center;
+		}
+
+		.operation-client {
+			flex: 1 0 300px;
+			text-align: center;
+		}
+
+		.operation-value {
+			flex: 1 0 200px;
+			text-align: right;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1 class="header smaller lighter blue">Historique des opérations</h1>
+
+		{% if operations is empty %}
+			<p style="font-family: Arial, sans-serif; font-size: 1.2rem;">Aucune opération trouvée.</p>
+		{% else %}
+			<ul class="list-group">
+				<li class="list-group-item desactive">
+					<div class="operation-info" style="font-family: Arial, sans-serif; font-size: 1.1rem;">
+						<div class="operation-date">
+							<strong>Date</strong>
+						</div>
+						<div class="operation-type">
+							<strong>Type</strong>
+						</div>
+						<div class="operation-client">
+							<strong>Client</strong>
+						</div>
+						<div class="operation-value">
+							<strong>Montant</strong>
+						</div>
+					</div>
+				</li>
+				{% for operation in operations %}
+					<li class="list-group-item operation-item">
+						<div class="operation-info" style="font-family: Arial, sans-serif; font-size: 1.1rem;">
+							<div class="operation-date">{{ operation.createdAt|date('d/m/Y H:i') }}</div>
+							<div class="operation-type">{{ operation.getTypeoperation().getLibelle() }}</div>
+							<div class="operation-client">{{ operation.getClient().getNom() }}</div>
+							<div class="operation-value">{{ operation.getValeurDevise() }}
+								euros</div>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+
+		{% endif %}
+	</div>
+{% endblock %}
+
+
+{% block javascripts %}
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<script>
+		<script>
+			$(document).ready(function () { // Ajouter une classe 'desactive' au premier élément de la liste
+$('.operation-item:first').addClass('active');
+
+// Cacher les éléments de la liste qui ont une valeur inférieure à 10 euros
+$('.operation-item').filter(function () {
+return parseFloat($(this).text().split(' ')[5]) < 10;
+}).hide();
+
+// Afficher les éléments de la liste qui ont une valeur supérieure à 50 euros lors d'un clic sur un bouton
+$('#show-high-value').click(function () {
+$('.operation-item').filter(function () {
+return parseFloat($(this).text().split(' ')[5]) > 50;
+}).addClass('high-value');
+});
+});
+		</script>
+	{% endblock %}

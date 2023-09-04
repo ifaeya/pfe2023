@@ -1,0 +1,44 @@
+{# templates/stats_dashboard.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h1>Statistiques</h1>
+
+    <h2>PMPA et PMPV de Toutes les Opérations</h2>
+    <canvas id="pmpChart" width="400" height="200"></canvas>
+    <script>
+        var pmpData = {
+            labels: {{ pmpLabels|json_encode|raw }},
+            datasets: [
+                {
+                    label: 'PMPA',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    data: {{ pmpaData|json_encode|raw }},
+                },
+                {
+                    label: 'PMPV',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1,
+                    data: {{ pmpvData|json_encode|raw }},
+                }
+            ]
+        };
+
+        var ctx = document.getElementById('pmpChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: pmpData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}ArchiveCoursdevises index{% endblock %}
+
+{% block body %}
+    <h1>Archive Cours devises Calendar</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Devises</th>
+                <th>Events</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set groupedArchives = {} %}
+            {% for archive in archive_coursdevises %}
+                {% set date = archive.dateArchivage ? archive.dateArchivage|date('Y-m-d') : '' %}
+                {% if groupedArchives[date] is not defined %}
+                    {% set groupedArchives = groupedArchives|merge({(date): []}) %}
+                {% endif %}
+                {% set groupedArchives = groupedArchives|merge({(date): groupedArchives[date]|merge([archive])}) %}
+            {% endfor %}
+            
+            {% if groupedArchives|length > 0 %}
+                {% for date, archives in groupedArchives %}
+                    {% for archive in archives %}
+                        <tr>
+                            {% if loop.first %}
+                                <td rowspan="{{ archives|length }}">{{ date }}</td>
+                            {% endif %}
+                            <td>{{ archive.cours.devises.code }}</td>
+                            <td>
+                                Achat: {{ archive.valeurachat }},
+                                <br>
+                                Vente: {{ archive.valeurvente }} 
+                            </td>
+                         <td class="small-td">
+    <div class="hidden-sm hidden-xs action-buttons">
+        <select onchange="if (this.value) window.location.href=this.value" class="form-control input-sm">
+            <option value="" selected>Actions</option>
+            <option value="{{ path('app_archive_coursdevises_show', {'id': archive.id}) }}">show</a>
+                           </option> </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No records found</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

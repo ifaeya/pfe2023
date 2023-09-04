@@ -1,0 +1,38 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Coursdevises{% endblock %}
+
+{% block body %}
+    <div class="col-xs-12">
+<h3 class="header smaller lighter blue">Supprimer cours devise </h3></div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Code devise</th>
+            <td>{{ coursdevise.devises.code }}</td>
+        </tr>
+        <tr>
+            <th>Achat</th>
+            <td>{{ coursdevise.valeurachat }}</td>
+        </tr>
+        <tr>
+            <th>Vente</th>
+            <td>{{ coursdevise.valeurvente }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-sm-6">
+        <a href="{{ path('app_coursdevises_index') }}" class="btn btn-primary">
+            Retour à la liste
+        </a>
+    </div>
+    <div class="col-sm-6 text-right">
+        {{ include('coursdevises/_delete_form.html.twig', {'button_text': 'Supprimer', 'button_class': 'btn btn-danger'}) }}
+    </div>
+</div>
+
+   
+{% endblock %}

@@ -1,0 +1,365 @@
+{# templates/achat/index.html.twig #}
+
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Achat{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style></style>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1 class="achat-title">Achat</h1>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <p id="error-message" class="error-message">{{ error }}</p>
+            </div>
+        {% endif %}
+        <form method="post" action="{{ path('app_achat_index') }}" class="vente-form" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="clientSelect">Rechercher par Numéro CIN ou Passeport:</label>
+                <select id="clientSelect" name="clientSelect">
+                    <option value="">Choisir un client</option>
+                    {% for client in clients %}
+                        {% set clientIdentifier = client.numCin ? client.numCin : client.numPasseport %}
+                        <option value="{{ client.id }}" data-numcin="{{ client.numCin }}" data-numpasseport="{{ client.numPasseport }}">
+                            {{ clientIdentifier }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+              <section>
+                <h2 class="section-title">Ajouter les informations du client:</h2>
+                <div class="form-group">
+              
+
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" id="nom" name="nom" class="form-control" required placeholder="Nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" id="prenom" name="prenom" class="form-control" required placeholder="Prénom">
+                    </div>
+                    <div class="form-group">
+                        <label for="numcin">Numéro CIN</label>
+                        <input type="text" id="numcin" name="numcin" class="form-control" required placeholder="Numéro CIN">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateCin">Date CIN</label>
+                        <input type="date" id="dateCin" name="dateCin" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numpasseport">Numéro passeport</label>
+                        <input type="text" id="numpasseport" name="numpasseport" class="form-control" required placeholder="Numéro passeport">
+                    </div>
+                    <div class="form-group">
+                        <label for="datepasseport">Date passeport</label>
+                        <input type="date" id="datepasseport" name="datepasseport" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="datevalidpasport">Date validité passeport</label>
+                        <input type="date" id="datevalidpasport" name="datevalidpasport" class="form-control" required>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title">Achat des devises:</h2>
+                <div class="form-group">
+                    <label for="date">Date de l'operation</label>
+                    <input type="date" id="date" name="date" value="{{ "now"|date('Y-m-d') }}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="devise">Devises</label>
+                    <select id="devise" name="code" class="form-control">
+                        <option value="">Choisir la devise</option>
+                        {% for devise in devises %}
+                            {% if devise.code != 'TND' %}
+                                <option value="{{ devise.code }}">
+                                    {{ devise.libelle }} ({{ devise.code }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="caisse">Caisse :</label>
+                    <select class="form-control" id="caisse" name="caisse">
+    <option value="" data-devise-code="">Choisir la caisse</option>
+    {% for caisse in caisses %}
+        <option value="{{ caisse.id }}" data-devise-code="{{ caisse.devises.code }}">{{ caisse.libelle }} / Solde : {{ caisse.solde }}</option>
+    {% endfor %}
+</select>
+
+                </div>
+                <div class="form-group">
+    <label>Montant</label>
+    <input type="number" id="montant" name="montant" step="0.01" placeholder="Saisir le montant" class="form-control">
+</div>
+       <div class="form-group">
+    <label for="files">Fichiers:</label>
+    <input type="file" id="files" name="files[]" class="form-control-file" multiple>
+</div>
+
+
+<div id="container-elements">
+    <div id="solde-caisse">
+        <p id="solde-caisse"></p>
+    </div>
+
+    <div id="converted-amount">
+                {% if convertedAmount %}
+                    Montant en {{ devise.code }}  : {{ convertedAmount }}
+                {% endif %}
+            </div>
+             </div>                    <div class="form-group">
+                    <input type="submit" id="valider-btn" value="Valider" class="btn btn-primary">
+                    <input type="reset" id="reset-btn" value="Annuler" class="btn btn-danger">
+                </div>
+            </section>
+  {% if convertedAmount > 5000 %}
+<a class="print-button" href="{{ path('app_imprimer') }}" >Reçu de change / bourdereau de change</a>
+  {% else %}
+  <a class="print-button" href="{{ path('app_imprimer') }}" onclick="window.print()">Reçu de change / bourdereau de change</a>
+
+  {% endif %}
+<a class="print-button" href="{{ path('app_imprimer2') }}" onclick="window.print()">Imprimer 2 </a>
+    
+            <a href="{{ path('app_achat_index') }}" class="btn btn-warning">Réinstaller</a>
+        </form>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    <script>
+        // Fonction pour récupérer le solde de la caisse depuis le backend
+      function fetchCaisseSolde(caisseId, montant) {
+    fetch(`/get_caisse_solde/${caisseId}`)
+        .then((response) => response.json())
+        .then((data) => {
+            // Comparer le solde de la caisse avec le montant saisi
+            if (data.solde >= montant) {
+                $("#solde-caisse").text("Solde de la caisse suffisant.");
+                // Ajouter la classe "show-css" au conteneur des éléments
+                $("#container-elements").addClass("show-css");
+            } else {
+                $("#solde-caisse").text("Solde de la caisse insuffisant.");
+                // Supprimer la classe "show-css" du conteneur des éléments
+                $("#container-elements").removeClass("show-css");
+            }
+        })
+        .catch((error) => console.error("Error fetching caisse solde:", error));
+}
+
+// Fonction pour afficher ou masquer le conteneur en fonction des conditions
+function toggleContainerVisibility(caisseId, montant) {
+    if (caisseId && montant && montant > 0) {
+        // Afficher le conteneur si les conditions sont remplies
+        $("#container-elements").show();
+    } else {
+        // Masquer le conteneur sinon
+        $("#container-elements").hide();
+    }
+}
+
+$(document).ready(function () {
+    // Appel de la fonction au chargement de la page pour gérer la visibilité initiale
+    var caisseId = $("#caisse").val();
+    var montant = parseFloat($("#montant").val());
+    toggleContainerVisibility(caisseId, montant);
+
+    // Appel de la fonction lorsque le caisse est sélectionné et le montant est saisi
+    $("#caisse, #montant").on("change input", function () {
+        var caisseId = $("#caisse").val();
+        var montant = parseFloat($("#montant").val());
+        toggleContainerVisibility(caisseId, montant);
+    });
+
+    // Appel de la fonction lorsque la devise est sélectionnée
+     $("#devise").on("change", function () {
+        var selectedDeviseCode = $(this).val();
+        var caisseSelect = $("#caisse");
+        var caisseOptions = caisseSelect.find("option");
+
+        if (selectedDeviseCode) {
+            // Parcourir toutes les options de caisse
+            caisseOptions.each(function () {
+                var caisseDeviseCode = $(this).data("devise-code");
+                // Afficher/masquer l'option en fonction de la correspondance avec la devise sélectionnée
+                if (caisseDeviseCode === selectedDeviseCode) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            // Sélectionner la première option visible après avoir filtré
+            var visibleCaisseOption = caisseOptions.filter(":visible").first();
+            if (visibleCaisseOption.length > 0) {
+                caisseSelect.val(visibleCaisseOption.val());
+            } else {
+                // Aucune caisse disponible pour la devise sélectionnée
+                caisseSelect.val("");
+            }
+        } else {
+            // Afficher toutes les options si aucune devise n'est sélectionnée
+            caisseOptions.show();
+        }
+    });
+});
+
+
+        function loadClientData(clientId) {
+            if (clientId !== "") {
+                fetch(`/achat/client/${clientId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Update the input fields with the client's data
+                        $("#nom").val(data.client.nom);
+                        $("#prenom").val(data.client.prenom);
+                        $("#numcin").val(data.client.numcin);
+                        $("#dateCin").val(data.client.datecin);
+                        $("#numpasseport").val(data.client.numpasseport);
+                        $("#datepasseport").val(data.client.datepasseport);
+                        $("#datevalidpasport").val(data.client.datevalidpasport);
+                    })
+                    .catch((error) => console.error("Error fetching client data:", error));
+            } else {
+                // Clear the input fields if no client is selected
+                $("#nom").val("");
+                $("#prenom").val("");
+                $("#numcin").val("");
+                $("#dateCin").val("");
+                $("#numpasseport").val("");
+                $("#datepasseport").val("");
+                $("#datevalidpasport").val("");
+            }
+        }
+
+        function searchClient() {
+            var searchValue = $("#searchInput").val().toLowerCase();
+            // Loop through each option in the select element
+            $("#clientSelect option").each(function () {
+                var clientIdentifier = ($(this).data("numcin") + " " + $(this).data("numpasseport")).toLowerCase();
+                // Check if the search value matches the concatenated client identifier
+                if (clientIdentifier.includes(searchValue)) {
+                    // Show the option
+                    $(this).show();
+                } else {
+                    // Hide the option
+                    $(this).hide();
+                }
+            });
+        }
+
+        function calculateConvertedAmount() {
+            var devise = $("#devise").val();
+            var montant = parseFloat($("#montant").val());
+
+            if (devise && !isNaN(montant)) {
+                var tauxDeConversion = {
+                    {% for devise in devises %}
+                        "{{ devise.code }}": {{ devise.devisecours.last().valeurachat }},
+                    {% endfor %}
+                };
+
+                var valeurAchat = {
+                    {% for devise in devises %}
+                        "{{ devise.code }}": {{ devise.devisecours.last().valeurachat }},
+                    {% endfor %}
+                };
+
+                var convertedAmount = montant * tauxDeConversion[devise];
+
+                // Afficher le montant converti et la valeur d'achat
+                $("#converted-amount").text("Montant converti en TND: " + convertedAmount.toFixed(2));
+                $("#converted-amount").append("<br>Taux d'achat : " + valeurAchat[devise]);
+            } else {
+                $("#converted-amount").text(""); // Cacher le montant converti si la devise ou le montant n'est pas sélectionné
+            }
+        }
+
+        $(document).ready(function () {
+            // Transform the select element into a searchable dropdown using Select2
+            $("#clientSelect").select2({
+                templateResult: formatClientOption // Custom formatting function for options
+            });
+
+            // Call the loadClientData function when the selection changes
+            $("#clientSelect").on("change", function () {
+                var selectedClientId = $(this).val();
+                loadClientData(selectedClientId);
+            });
+
+            // Call the searchClient function when the search button is clicked
+            $("#searchButton").on("click", function () {
+                searchClient();
+            });
+
+            // Call the searchClient function when the search input changes
+            $("#searchInput").on("input", function () {
+                searchClient();
+            });
+
+            // Calculate the converted amount when the currency or amount changes
+            $("#devise, #montant").on("input change", function () {
+                calculateConvertedAmount();
+            });
+
+            // Call the calculateConvertedAmount function when the page loads
+            calculateConvertedAmount();
+
+            // Disable the submit button if the amount is not valid
+            $("#valider-btn").prop("disabled", true);
+            $("#montant").on("input", function () {
+                var montant = parseFloat($(this).val());
+                if (!isNaN(montant) && montant > 0) {
+                    $("#valider-btn").prop("disabled", false);
+                } else {
+                    $("#valider-btn").prop("disabled", true);
+                }
+            });
+
+            // Show/hide the error message
+            $('#error-message').fadeIn(1000).delay(3000).fadeOut(1000);
+
+            // Print button functionality
+            $('#print-btn').click(function () {
+                window.print();
+            });
+
+            // Reset button functionality
+            $('#reset-btn').click(function () {
+                $('form')[0].reset();
+                $('#converted-amount').text('');
+            });
+
+            // Custom formatting function for options
+            function formatClientOption(client) {
+                if (!client.id) {
+                    // Return the option for "Choisir un client"
+                    return client.text;
+                }
+                // Concatenate numCin and numPasseport in the option label
+                var clientIdentifier = client.element.dataset.numcin + " | " + client.element.dataset.numpasseport;
+                return $('<span>' + clientIdentifier + '</span>');
+            }
+
+            // Call fetchCaisseSolde when the caisse is selected and the montant is input
+            $("#caisse, #montant").on("change input", function () {
+                var caisseId = $("#caisse").val();
+                var montant = parseFloat($("#montant").val());
+                if (caisseId && !isNaN(montant) && montant > 0) {
+                    fetchCaisseSolde(caisseId, montant);
+                } else {
+                    $("#solde-caisse").text(""); // Clear the message if caisse or montant is not selected
+                }
+            });
+        });
+    </script>
+{% endblock %}

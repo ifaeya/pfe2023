@@ -1,0 +1,1346 @@
+<html lang="fr">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta charset="utf-8">
+	<title></title>
+
+	<meta name="description" content="">
+	<meta
+	name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<!-- Google Font: Source Sans Pro -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+	<style>
+		/* Global styles */
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+		}
+
+		.container-fluid {
+			padding: 20px;
+		}
+
+		/* Header styles */
+		h2 {
+			margin-bottom: 10px;
+		}
+
+		/* Table styles */
+		.table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+			font-size: 14px;
+		}
+
+		.table th,
+		.table td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			text-align: center;
+		}
+
+		/* Charts styles */
+		canvas {
+			width: 100%;
+			max-width: 600px;
+			max-height: 400px;
+			display: block;
+			margin: 20px auto;
+			border: 1px solid #ccc;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease-in-out;
+		}
+
+		/* Custom styles */
+		.animated-title {
+			font-size: 3rem;
+			color: #ff5733;
+			animation: fadeInDown 1s ease-in-out;
+		}
+
+		.animated-subtitle {
+			font-size: 1.5rem;
+			color: #007bff;
+			animation: fadeInUp 1s ease-in-out;
+		}
+
+		.animated-card {
+			background-color: #f8f9fa;
+			border-radius: 10px;
+			padding: 20px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			animation: fadeInLeft 1s ease-in-out;
+		}
+
+		.animated-chart {
+			animation: fadeInRight 1s ease-in-out;
+		}
+
+		.animated-alert {
+			animation: bounceIn 1s ease-in-out;
+		}
+
+		canvas:hover {
+			transform: scale(1.05);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+.small-td {
+    width: 120px; /* Ajustez la largeur selon vos besoins */
+    padding: 0; /* Réduire l'espacement interne si nécessaire */
+}
+
+/* Réduire la hauteur de la liste déroulante pour mieux s'adapter à la cellule */
+.small-td select {
+    height: auto;
+}
+
+		/* Sidebar styles */
+		.sidebar {
+			background-color: #222;
+			color: #fff;
+			width: 250px;
+			height: 100%;
+			position: fixed;
+			top: 0;
+			left: -300px; /* Décalage supplémentaire pour une entrée plus fluide */
+			overflow-y: auto;
+			transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1.2); /* Transition personnalisée */
+			z-index: 1000; /* Place la sidebar au-dessus du contenu */
+		}
+
+		/* Ajout d'une animation et d'une transition pour ouvrir la sidebar */
+		.sidebar.active {
+			left: 0;
+			animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1.2), fadeIn 0.6s ease-in-out; /* Animations de slideIn et fadeIn */
+		}
+
+
+		.sidebar ul {
+			list-style: none;
+			padding: 0;
+			margin: 20px 0;
+		}
+
+		.sidebar ul li {
+			margin-bottom: 10px;
+		}
+
+		.sidebar ul li a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 8px 15px;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		.sidebar ul li a:hover {
+			background-color: #444;
+		}
+
+		/* Media queries */
+		@media(max-width: 768px) {
+			.sidebar {
+				left: -250px;
+			}
+
+			.sidebar.active {
+				left: 0;
+			}
+		}
+
+		@keyframes slideIn {
+			from {
+				transform: translateX(-100%);
+			}
+			to {
+				transform: translateX(0);
+			}
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+
+
+		/* Footer styles */
+		.footer {
+			background-color: #f8f8f8;
+			color: #333;
+			padding: 20px 0;
+			text-align: center;
+			font-size: 14px;
+		}
+
+		.footer-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+
+		.footer-content {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.footer-content .bigger-120 {
+			font-size: 18px;
+		}
+
+		.footer-content .blue {
+			color: #007bff;
+		}
+
+		/* Scroll up button styles */
+		.btn-scroll-up {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			width: 40px;
+			height: 40px;
+			background-color: #007bff;
+			border: none;
+			border-radius: 50%;
+			color: #fff;
+			font-size: 18px;
+			text-align: center;
+			line-height: 40px;
+			cursor: pointer;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+		}
+
+		.btn-scroll-up:hover {
+			background-color: #0056b3;
+		}
+
+		.btn-scroll-up.active {
+			opacity: 1;
+			visibility: visible;
+		}
+
+
+		/* Title styles */
+		h2,
+		h3 {
+			color: #333333;
+			margin-bottom: 10px;
+		}
+
+		/* Paragraph styles */
+		p {
+			color: #666666;
+			margin-bottom: 10px;
+		}
+
+		/* Column styles */
+		.col-md-6 {
+			width: 50%;
+			float: left;
+			padding: 0 15px;
+			box-sizing: border-box;
+		}
+
+		/* Row styles */
+		.row::after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+
+		/* Alert styles */
+		#alert-container {
+			background-color: #ffeecc;
+			padding: 10px;
+			border-radius: 5px;
+			margin-top: 20px;
+		}
+	</style>
+
+
+	<!-- bootstrap & fontawesome -->
+	<link rel="stylesheet" href="{{ asset('assets1/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets1/font-awesome/4.5.0/css/font-awesome.min.css') }}">
+
+	<!-- page specific plugin styles -->
+
+	<!-- text fonts -->
+	<link
+	rel="stylesheet" href="{{ asset('assets1/css/fonts.googleapis.com.css') }}"> <!-- ace styles -->
+	<link
+	rel="stylesheet" href="{{ asset('assets1/css/ace.min.css') }}" class="ace-main-stylesheet" id="main-ace-style">
+
+	<!--[if lte IE 9]>
+							<link rel="stylesheet" href="{{ asset('assets1/css/ace-part2.min.css') }}" class="ace-main-stylesheet" />
+						<![endif]-->
+	<link rel="stylesheet" href="{{ asset('assets1/css/ace-skins.min.css') }}">
+	<link
+	rel="stylesheet" href="{{ asset('assets1/css/ace-rtl.min.css') }}">
+	<!--[if lte IE 9]>
+								  <link rel="stylesheet" href="{{ asset('assets1/css/ace-ie.min.css') }}" />
+								<![endif]-->
+
+
+	<link rel="stylesheet" href="{{ asset('assets1/css/jquery-ui.custom.min.css') }}"/>
+	<link
+	rel="stylesheet" href="{{ asset('assets1/css/fullcalendar.min.css') }}"/>
+
+	<!-- text fonts -->
+	<link
+	rel="stylesheet" href="{{ asset('assets1/css/fonts.googleapis.com.css') }}"/>
+
+	<!-- ace styles -->
+	<link rel="stylesheet" href="{{ asset('assets1/css/ace.min.css') }}" class="ace-main-stylesheet" id="main-ace-style"/>
+
+
+	<link rel="stylesheet" href="{{ asset('assets1/css/ace-part2.min.css') }}" class="ace-main-stylesheet"/>
+
+	<link rel="stylesheet" href="{{ asset('assets1/css/ace-skins.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('assets1/css/ace-rtl.min.css') }}"/>
+
+
+	<link rel="stylesheet" href="{{ asset('assets1/css/ace-ie.min.css') }}"/>
+
+	<!-- inline styles related to this page -->
+
+	<!-- ace settings handler --><script src="{{ asset('assets1/js/ace-extra.min.js') }}"> </script>
+
+
+	<!-- inline styles related to this page -->
+
+	<!-- ace settings handler -->
+	<script src="{{ asset('assets1/js/ace-extra.min.js') }}"></script>
+	<style>
+		/* Ajoutez ce CSS dans votre fichier de styles */
+		.container-fluid {
+			padding: 20px;
+		}
+
+		.row {
+			margin-bottom: 20px;
+		}
+
+		.col-md-6 {
+			width: 50%;
+			float: left;
+			padding: 10px;
+		}
+
+		.col-md-12 {
+			width: 100%;
+			float: left;
+			padding: 10px;
+		}
+
+		/* Optionnel : Ajustez les styles selon vos besoins */
+		h2 {
+			margin-top: 0;
+		}
+
+		h3 {
+			margin-top: 0;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid black;
+		}
+
+		th,
+		td {
+			padding: 8px;
+			text-align: left;
+		}
+
+		canvas {
+			max-width: 100%;
+			height: auto;
+		}
+
+		#transfertForm {
+			margin-top: 20px;
+			padding: 20px;
+			border: 1px solid #ddd;
+			background-color: #f8f8f8;
+		}
+
+		#transfertForm label {
+			font-weight: bold;
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		#transfertForm select,
+		#transfertForm input[type="number"] {
+			width: 100%;
+			padding: 8px;
+			margin-bottom: 15px;
+		}
+
+		/* Boutons */
+		.btn-primary,
+		.btn-warning {
+			padding: 10px 20px;
+			margin-right: 10px;
+		}
+
+		/* Messages d'alerte */
+		.alert {
+			padding: 10px;
+			margin-top: 15px;
+		}
+
+		/* Tableau des caisses */
+		table {
+			margin-top: 20px;
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid #ddd;
+		}
+
+		th,
+		td {
+			padding: 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f5f5f5;
+		}
+		@keyframes nodeInserted {
+			from {
+				outline-color: #fff
+			}
+			to {
+				outline-color: #000
+			}
+		}
+		@-moz-keyframes nodeInserted {
+			from {
+				outline-color: #fff
+			}
+			to {
+				outline-color: #000
+			}
+		}
+		@-webkit-keyframes nodeInserted {
+			from {
+				outline-color: #fff
+			}
+			to {
+				outline-color: #000
+			}
+		}
+		@-ms-keyframes nodeInserted {
+			from {
+				outline-color: #fff
+			}
+			to {
+				outline-color: #000
+			}
+		}
+		@-o-keyframes nodeInserted {
+			from {
+				outline-color: #fff
+			}
+			to {
+				outline-color: #000
+			}
+		}
+		.ace-save-state {
+			animation-duration: 10ms;
+			-o-animation-duration: 10ms;
+			-ms-animation-duration: 10ms;
+			-moz-animation-duration: 10ms;
+			-webkit-animation-duration: 10ms;
+			animation-delay: 0s;
+			-o-animation-delay: 0s;
+			-ms-animation-delay: 0s;
+			-moz-animation-delay: 0s;
+			-webkit-animation-delay: 0s;
+			animation-name: nodeInserted;
+			-o-animation-name: nodeInserted;
+			-ms-animation-name: nodeInserted;
+			-moz-animation-name: nodeInserted;
+			-webkit-animation-name: nodeInserted
+		}
+		/* styles.css */
+
+		/* Style du conteneur */
+		.confirme-container {
+			width: 80%; /* Largeur du conteneur à 80% de la largeur de l'écran */
+			margin: 0 auto; /* Centrer le conteneur horizontalement */
+			text-align: center; /* Centrer le texte horizontalement */
+		}
+		#alimentationForm {
+			margin-top: 20px;
+			padding: 20px;
+			border: 1px solid #ddd;
+			background-color: #f8f8f8;
+		}
+		#calendar {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+
+		/* Style des événements */
+		.fc-event {
+			background-color: rgba(30, 144, 255, 0.2);
+			border-color: rgb(30, 144, 255);
+			color: rgb(30, 144, 255);
+		}
+
+		/* Style du titre de l'événement */
+		.fc-event-title {
+			font-size: 14px;
+			margin: 0;
+			padding: 5px;
+		}
+
+		/* Style des boutons de navigation du calendrier */
+		.fc-prev-button,
+		.fc-next-button {
+			background-color: rgb(30, 144, 255);
+			color: white;
+			border: none;
+		}
+
+		/* Style des jours de la semaine dans l'en-tête du calendrier */
+		.fc-day-header {
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		/* Style de l'arrière-plan du jour sélectionné */
+		.fc-day.fc-widget-content.fc-sun.fc-today {
+			background-color: rgba(30, 144, 255, 0.1);
+		}
+
+		/* Style du bouton "Aujourd'hui" */
+		.fc-today-button {
+			background-color: rgb(30, 144, 255);
+			color: white;
+		}
+
+		/* Style du bouton de changement de vue du calendrier */
+		.fc-button-group .fc-button {
+			background-color: rgb(30, 144, 255);
+			color: white;
+			border: none;
+		}
+		#alimentationForm label {
+			font-weight: bold;
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		#alimentationForm select,
+		#alimentationForm input[type="number"] {
+			width: 100%;
+			padding: 8px;
+			margin-bottom: 15px;
+		}
+
+		/* Boutons */
+		.btn-primary,
+		.btn-warning {
+			padding: 10px 20px;
+			margin-right: 10px;
+		}
+
+		/* Messages d'alerte */
+		.alert {
+			padding: 10px;
+			margin-top: 15px;
+		}
+
+		/* Tableau des caisses */
+		table {
+			margin-top: 20px;
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid #ddd;
+		}
+
+		th,
+		td {
+			padding: 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f5f5f5;
+		}
+		/* Couleur et taille du texte */
+		.confirme-title {
+			color: #336699; /* Couleur bleue pour le texte */
+			font-size: 24px; /* Taille du texte 24 pixels */
+			font-weight: bold; /* Texte en gras */
+			margin-top: 30px; /* Marge supérieure de 30 pixels */
+			margin-bottom: 15px; /* Marge inférieure de 15 pixels */
+			display: inline-block; /* Afficher le titre en tant que bloc en ligne */
+		}
+		/* CSS pour le conteneur global */
+		#container-elements {
+			background-color: #f2f2f2;
+			border: 1px solid #ccc;
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			margin-bottom: 20px;
+			display: none; /* Masquer le conteneur par défaut */
+		}
+
+		/* CSS pour l'élément solde-caisse */
+		#solde-caisse {
+			font-size: 18px;
+			color: #008000; /* Couleur verte pour indiquer que le solde est suffisant */
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		/* CSS pour l'élément converted-amount */
+		#converted-amount {
+			font-size: 16px;
+			color: #333;
+		}
+
+		/* Style de bordure pour le titre */
+		.confirme-title::after {
+			content: ""; /* Ajouter un pseudo-élément après le titre */
+			display: block; /* Afficher le pseudo-élément en tant que bloc */
+			width: 100%; /* Largeur du pseudo-élément à 100% du conteneur parent */
+			height: 2px; /* Hauteur de la bordure inférieure à 2 pixels */
+			background-color: #336699; /* Couleur bleue pour la bordure */
+			margin: 5px auto 0; /* Centrer le pseudo-élément horizontalement */ /* Marge supérieure de 5 pixels pour l'espace entre le titre et la bordure */
+		}
+
+		/* Import Google Font - Poppins */
+		#calendar {
+			max-width: 800px;
+			margin: 0 auto;
+			background-color: white;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 5px;
+		}
+
+		/* Style de l'en-tête du calendrier */
+		.fc-header {
+			background-color: #f7f7f7;
+			border-bottom: 1px solid #ddd;
+		}
+
+		/* Style des boutons de navigation du calendrier */
+		.fc-prev-button,
+		.fc-next-button,
+		.fc-today-button {
+			background-color: #3498db;
+			color: white;
+		}
+
+		/* Style des jours de la semaine dans l'en-tête du calendrier */
+		.fc-day-header {
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		/* Style de l'arrière-plan du jour actuel */
+		.fc-day.fc-today {
+			background-color: #f2f2f2;
+		}
+
+		/* Style des événements dans la liste d'événements externes */
+		.external-event {
+			padding: 5px 10px;
+			margin: 5px 0;
+			cursor: move;
+		}
+
+		/* Couleurs pour les événements externes */
+		.external-event.label-grey {
+			background-color: #d3d3d3;
+		}
+		.external-event.label-success {
+			background-color: #5cb85c;
+		}
+		.external-event.label-danger {
+			background-color: #d9534f;
+		}
+		.external-event.label-purple {
+			background-color: #9b59b6;
+		}
+		.external-event.label-yellow {
+			background-color: #f39c12;
+		}
+		.external-event.label-pink {
+			background-color: #e74c3c;
+		}
+		.external-event.label-info {
+			background-color: #3498db;
+		}
+
+		/* Style de l'option "Remove after drop" */
+		#drop-remove + .lbl:before {
+			content: '\f0d5';
+			font-family: FontAwesome;
+			font-size: 14px;
+			margin-right: 5px;
+		}
+		.wrapper {
+			width: 370px;
+			padding: 30px;
+			border-radius: 7px;
+			background: #fff;
+			box-shadow: 7px 7px 20px rgba(0, 0, 0, 0); /* styles.css */
+
+			/* Style du conteneur */
+			.confirme-container {
+				width: 80%; /* Largeur du conteneur à 80% de la largeur de l'écran */
+				margin: 0 auto; /* Centrer le conteneur horizontalement */
+				text-align: center; /* Centrer le texte horizontalement */
+			}
+
+			/* Couleur et taille du texte */
+			.confirme-title {
+				color: #336699; /* Couleur bleue pour le texte */
+				font-size: 24px; /* Taille du texte 24 pixels */
+				font-weight: bold; /* Texte en gras */
+				margin-top: 30px; /* Marge supérieure de 30 pixels */
+				margin-bottom: 15px; /* Marge inférieure de 15 pixels */
+				display: inline-block; /* Afficher le titre en tant que bloc en ligne */
+			}
+
+			/* Style de bordure pour le titre */
+			.confirme-title::after {
+				content: ""; /* Ajouter un pseudo-élément après le titre */
+				display: block; /* Afficher le pseudo-élément en tant que bloc */
+				width: 100%; /* Largeur du pseudo-élément à 100% du conteneur parent */
+				height: 2px; /* Hauteur de la bordure inférieure à 2 pixels */
+				background-color: #336699; /* Couleur bleue pour la bordure */
+				margin: 5px auto 0; /* Centrer le pseudo-élément horizontalement */ /* Marge supérieure de 5 pixels pour l'espace entre le titre et la bordure */
+			}
+
+		}
+
+		.frame {
+			border: 1px solid #ccc;
+			padding: 20px;
+			border-radius: 80px;
+			box-shadow: 10 0 10px rgba(0, 0, 0, 0.1);
+			max-width: 400px;
+			width: 100%;
+		}
+
+		.wrapper header {
+			font-size: 28px;
+			font-weight: 500;
+			text-align: center;
+		}
+
+		.wrapper form {
+			margin: 40px 0 20px;
+		}
+
+		form:where(input, select, button) {
+			width: 100%;
+			outline: none;
+			border-radius: 5px;
+			border: none;
+		}
+
+		form p {
+			font-size: 18px;
+			margin-bottom: 5px;
+		}
+
+		form input {
+			height: 50px;
+			font-size: 17px;
+			padding: 0 15px;
+			border: 1px solid #999;
+		}
+		.reservations-container {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+		}
+
+		.reservation-card {
+			background-color: #f9f9f9;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			width: 300px;
+			max-width: 100%;
+		}
+
+		.reservation-card h2 {
+			font-size: 18px;
+			margin-bottom: 8px;
+			color: #333;
+		}
+
+		.reservation-card p {
+			margin: 0;
+			color: #666;
+		}
+
+		.reservation-card h3 {
+			font-size: 16px;
+			margin-top: 12px;
+			color: #555;
+		}
+
+		.no-confirmation {
+			font-style: italic;
+			color: #999;
+		}
+
+		textarea,
+		input[type="date"],
+		input[type="time"] {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			margin-bottom: 20px;
+		}
+		form .drop-list {
+			display: flex;
+			margin-top: 20px;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.drop-list .select-box {
+			display: flex;
+			width: 115px;
+			height: 45px;
+			align-items: center;
+			border-radius: 5px;
+			justify-content: center;
+			border: 1px solid #999;
+		}
+
+		.select-box img {
+			max-width: 21px;
+		}
+
+		.select-box select {
+			width: auto;
+			font-size: 16px;
+			background: none;
+			margin: 0 -5px 0 5px;
+		}
+
+		.select-box select::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		.select-box select::-webkit-scrollbar-track {
+			background: #fff;
+		}
+
+		.select-box select::-webkit-scrollbar-thumb {
+			background: #888;
+			border-radius: 8px;
+			border-right: 2px solid #ffffff;
+		}
+
+		.drop-list .icon {
+			cursor: pointer;
+			margin-top: 30px;
+			font-size: 22px;
+		}
+
+		form .exchange-rate {
+			font-size: 17px;
+			margin: 20px 0 30px;
+		}
+		.achat-form {
+			margin: 20px;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #f9f9f9;
+		}
+
+		.achat-form label {
+			font-weight: bold;
+		}
+
+		.achat-form input[type="date"],
+		.achat-form input[type="number"],
+		.achat-form select {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #fff;
+			margin-bottom: 10px;
+		}
+
+		.achat-form #valider-btn {
+			background-color: #0a4fb6;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.achat-form #valider-btn:hover {
+			background-color: #14c263;
+		}
+
+		.achat-form p {
+			margin-top: 10px;
+		}
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			color: #333;
+			margin-bottom: 20px;
+		}
+
+		p {
+			margin-bottom: 10px;
+		}
+
+		.table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
+
+		.table th,
+		.table td {
+			padding: 10px;
+			border: 1px solid #ccc;
+		}
+
+		.table th {
+			background-color: #f2f2f2;
+			font-weight: bold;
+			text-align: left;
+		}
+		/* Styles pour le titre */
+		.h1.achat-title {
+			font-size: 24px;
+			font-weight: bold;
+			color: #333;
+			margin-bottom: 20px;
+		}
+
+		/* Styles pour la liste des devises disponibles */
+		.eyaa {
+			font-size: 24px;
+			font-weight: bold;
+			color: #333;
+			margin-bottom: 20px;
+		}
+
+		.eyat {
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.eyat li {
+			margin-bottom: 10px;
+			display: flex;
+			align-items: center;
+		}
+
+		.eyat li::before {
+			content: "•";
+			margin-right: 5px;
+			color: #007bff;
+		}
+
+		.eyat li span {
+			font-weight: bold;
+		}
+
+		.eyat li small {
+			color: #999;
+		}
+
+		/* Styles pour le formulaire */
+		form {
+			margin-bottom: 20px;
+		}
+
+		label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		select.form-control {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		input[type="number"] {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		/* Styles pour les checkboxes */
+		input[type="checkbox"] {
+			display: none;
+		}
+
+		input[type="checkbox"] + label {
+			display: inline-block;
+			padding-left: 25px;
+			position: relative;
+			margin-bottom: 10px;
+			cursor: pointer;
+		}
+
+		input[type="checkbox"] + label:before {
+			content: "";
+			display: inline-block;
+			width: 16px;
+			height: 16px;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			position: absolute;
+			left: 0;
+			top: 1px;
+			background-color: #fff;
+		}
+
+		input[type="checkbox"]:checked + label:before {
+			background-color: #007bff;
+			border-color: #007bff;
+		}
+
+		/* Styles pour le bouton */
+		button[type="submit"] {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-weight: bold;
+		}
+
+		button[type="submit"]:hover {
+			background-color: #0056b3;
+		}
+		/* Styles pour le bouton */
+		button[type="submit1"] {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-weight: bold;
+			float: right; /* Affiche le bouton à droite */
+		}
+
+		button[type="submit1"]:hover {
+			background-color: #0056b3;
+		}
+
+
+		/* Styles pour les icônes de devise */
+		.currency-icon {
+			width: 20px;
+			height: 20px;
+			margin-right: 5px;
+		}
+
+
+		.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			text-decoration: none;
+			font-weight: bold;
+			transition: background-color 0.3s ease;
+		}
+		.eya {
+			font-size: 16px;
+			color: #333;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		.btn:hover {
+			background-color: #0056b3;
+		}
+
+		.achat-title {
+			font-size: 28px;
+			color: #0a4fb6;
+			text-align: center;
+			margin-bottom: 30px;
+			text-transform: uppercase;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		}
+
+		.error-message {
+			color: red;
+			font-weight: bold;
+		}
+
+		.converted-amount {
+			color: green;
+			font-weight: bold;
+		}
+
+		.vente-form {
+			margin: 20px;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #f9f9f9;
+		}
+
+		.vente-form label {
+			font-weight: bold;
+		}
+
+		.vente-form input[type="date"],
+		.vente-form input[type="number"],
+		.vente-form select {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #fff;
+			margin-bottom: 10px;
+		}
+
+		.vente-form #valider-btn {
+			background-color: #0a4fb6;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.vente-form #valider-btn:hover {
+			background-color: #14c263;
+		}
+
+		.vente-form p {
+			margin-top: 10px;
+		}
+
+		.vente-title {
+			font-size: 28px;
+			color: #0a4fb6;
+			text-align: center;
+			margin-bottom: 30px;
+			text-transform: uppercase;
+			font-weight: bold;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+			animation-name: fadeInUp;
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		.error-message {
+			color: red;
+			font-weight: bold;
+		}
+
+		.converted-amount {
+			color: green;
+			font-weight: bold;
+		}
+		.section-title {
+			color: #7777ff;
+			font-size: 20px;
+			margin-bottom: 10px;
+			font-weight: bold;
+			animation-name: fadeInUp;
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		@keyframes fadeInUp {
+			0% {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		.section-title {
+			color: #3e7b7b;
+			font-size: 20px;
+			margin-bottom: 10px;
+			font-weight: bold;
+			animation-name: fadeInUp;
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		.form-group {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-gap: 10px;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.form-group label {
+			grid-column: 1;
+			margin-bottom: 0;
+		}
+
+		.form-group input,
+		.form-group select {
+			grid-column: 2;
+			width: 100%;
+		}
+
+		@keyframes fadeInUp {
+			0% {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	</style>
+
+	<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+	<!--[if lte IE 8]>
+						<script src="{{ asset('assets1/js/html5shiv.min.js') }}"></script>
+						<script src="{{ asset('assets1/js/respond.min.js') }}"></script>
+						<![endif]-->
+	<link type="text/css') }}" rel="stylesheet" charset="UTF-8" href="https://www.gstatic.com/_/translate_http/_/ss/k=translate_http.tr.cYEbrOmw59Q.L.W.O/d=0/rs=AN8SPfpU282joXDlbkUblMtWLWoZn4bb2g/m=el_main_css') }}">
+</head><body id="page-top">
+    {{ include('admin1/includes1/header.html.twig') }}
+
+    <div class="container">
+        {% for message in app.session.flashBag.get('info') %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.session.flashBag.get('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.session.flashBag.get('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% block body %}<div class="container-fluid"></div>
+{% endblock %}
+    </div>
+
+    {{ include('admin1/includes1/footer.html.twig') }}
+
+    {% block javascripts %}
+       
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet"/>
+
+		<script src="{{ asset('assets1/js/jquery-2.1.4.min.js') }}"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+					<script src="{{ asset('assets1/js/jquery-1.11.3.min.js') }}"></script>
+					<![endif]-->
+
+		<script src="{{ asset('assets1/js/bootstrap.min.js') }}"></script>
+
+		<!-- page specific plugin scripts -->
+
+		<!-- ace scripts -->
+		<script src="{{ asset('assets1/js/ace-elements.min.js') }}"></script>
+		<script src="{{ asset('assets1/js/ace.min.js') }}"></script>
+		<script src="{{ asset('/js/jquery-2.1.4.min.js') }}"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+					<script src="{{ asset('/js/jquery-1.11.3.min.js') }}"></script>
+					<![endif]-->
+
+		<script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+
+		<!-- page specific plugin scripts -->
+		<script src="{{ asset('/js/jquery.dataTables.min.js') }}"></script>
+		<script src="{{ asset('/js/jquery.dataTables.bootstrap.min.js') }}"></script>
+		<script src="{{ asset('/js/dataTables.buttons.min.js') }}"></script>
+		<script src="{{ asset('/js/buttons.flash.min.js') }}"></script>
+		<script src="{{ asset('/js/buttons.html5.min.js') }}"></script>
+		<script src="{{ asset('/js/buttons.print.min.js') }}"></script>
+		<script src="{{ asset('/js/buttons.colVis.min.js') }}"></script>
+		<script src="{{ asset('/js/dataTables.select.min.js') }}"></script>
+
+		<!-- ace scripts -->
+		<script src="{{ asset('/js/ace-elements.min.js') }}"></script>
+		<script src="{{ asset('/js/ace.min.js') }}"></script>
+
+		<!-- inline scripts related to this page -->
+
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+
+		<script src="{{ asset('assets1/js/jquery-2.1.4.min.js') }}"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+					<script src="{{ asset('assets1/js/jquery-1.11.3.min.js') }}"></script>
+						<script src="{{asset('convertir/js/country-list.js') }}"></script>
+			<script src="{{asset('convertir/js/script.js') }}"></script>
+					<![endif]-->
+
+	{% endblock %}
+</body></html>

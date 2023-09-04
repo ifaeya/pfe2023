@@ -1,0 +1,228 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Hello ReportingController!{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+   <div class="row">
+        <div class="col-md-12 text-center mt-4">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Alerte :</strong> Marge Réalisée critique dépassée !
+                <button type="button" class="btn-close animated-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <h1 class="achat-title">Statistiques</h1>
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 text-center mt-5">
+            <p class="lead mb-4 animated-subtitle">Découvrez les données clés sur les opérations</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 animated-card">
+            <h2 class="section-title">Opérations d'achat</h2>
+            <p class="text-muted">Nombre d'opérations d'achat : {{ nombreOperationsAchat }}</p>
+        </div>
+        <div class="col-lg-6 animated-card">
+            <h2 class="section-title">Opérations de vente</h2>
+            <p class="text-muted">Nombre d'opérations de vente : {{ nombreOperationsVente }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-12 animate__animated animate__fadeInUp animated-card">
+            <h2 class="section-title">PMPA et PMPV de Toutes les Opérations</h2>
+            <canvas id="pmpChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 animated-card">
+            <h2 class="section-title">Marge Réalisée</h2>
+            <canvas id="margeRealiseeChart" width="400" height="200"></canvas>
+        </div>
+        <div class="col-md-6 animated-card">
+            <h2 class="section-title">Résultat Réalisé</h2>
+            <canvas id="resultatRealiseChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-12 animate__animated animate__fadeInUp animated-card">
+            <h2 class="section-title">Marge Latente</h2>
+            <canvas id="margeLatenteChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+ 
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+   <script>
+    var pmpData = {
+        labels: {{ pmpLabels|json_encode|raw }},
+        datasets: [
+            {
+                label: 'PMPA',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                data: {{ pmpaData|json_encode|raw }},
+            },
+            {
+                label: 'PMPV',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1,
+                data: {{ pmpvData|json_encode|raw }},
+            }
+        ]
+    };
+
+    var ctx = document.getElementById('pmpChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: pmpData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+ <script>
+        const chartData = {{ chartData|raw }};
+        const labels = chartData.labels;
+
+        // Configuration des graphiques (Marge Réalisée, Résultat Réalisé, etc.)
+        const configureCharts = () => {
+            const margeRealiseeChart = new Chart(document.getElementById('margeRealiseeChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Marge Réalisée',
+                        data: chartData.margeRealisee,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                },
+            });
+
+            const resultatRealiseChart = new Chart(document.getElementById('resultatRealiseChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Résultat Réalisé',
+                        data: chartData.resultatRealise,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        }
+                    }
+                },
+            });
+
+            const margeLatenteChart = new Chart(document.getElementById('margeLatenteChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Marge Latente',
+                        data: chartData.margeLatente,
+                        fill: false,
+                        borderColor: 'rgb(54, 162, 235)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                },
+            });
+
+            const pmpChart = new Chart(document.getElementById('pmpChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'PMPA',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            data: chartData.pmpaData,
+                        },
+                        {
+                            label: 'PMPV',
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1,
+                            data: chartData.pmpvData,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        };
+
+        // Mécanisme de détection d'alertes avancé
+        const alerts = {
+            margeRealisee: {
+                threshold: 1500,
+                triggered: false,
+            },
+        };
+
+        const detectAlerts = () => {
+            if (!alerts.margeRealisee.triggered) {
+                if (chartData.margeRealisee.some(value => value > alerts.margeRealisee.threshold)) {
+                    alerts.margeRealisee.triggered = true;
+                    showNotification('Alerte : Marge Réalisée critique dépassée !');
+                }
+            }
+            // Ajoutez des conditions pour d'autres indicateurs d'alerte ici...
+        };
+
+        const showNotification = (message) => {
+            console.log(message);
+            const alertContainer = document.getElementById('alert-container');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.textContent = message;
+            alertContainer.appendChild(alertDiv);
+        };
+
+        // Appel de la fonction de détection d'alertes à intervalles réguliers
+        setInterval(detectAlerts, 60000); // Exécute toutes les 60 secondes (ajustez selon vos besoins)
+
+        // Attente de la fin du chargement du document
+        document.addEventListener('DOMContentLoaded', configureCharts);
+    </script>
+{% endblock %}
+
+

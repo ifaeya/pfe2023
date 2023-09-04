@@ -1,0 +1,15 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Ajouter Cours devises{% endblock %}
+
+{% block body %}
+<div class="col-xs-12">
+<h3 class="header smaller lighter blue">Ajouter des cours devises </h3></div>
+    {{ include('coursdevises/_form.html.twig') }}
+
+<button class="btn btn-white btn-info btn-bold">
+<font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+<a href="{{ path('app_coursdevises_index') }}" >Retour à la liste</a>
+</font></font>
+</button>    
+{% endblock %}

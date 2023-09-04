@@ -1,0 +1,18 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Réservations confirmées{% endblock %}
+
+{% block body %}
+    <h1 class="vente-title">Liste des réservations confirmées</h1>
+
+    <div class="reservations-container">
+        {% for reservation in confirmed_reservations %}
+            <div class="reservation-card">
+                <h2>Réservation {{ reservation.Createdat|date('Y-m-d H:i:s') }}</h2>
+                <p>Montant : {{ reservation.montant }}</p>
+                <h3>Confirmation :</h3>
+                <p>{{ reservation.confirmation }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

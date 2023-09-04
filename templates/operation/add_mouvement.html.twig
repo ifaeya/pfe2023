@@ -1,0 +1,16 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Ajouter un mouvement
+{% endblock %}
+
+{% block body %}
+	<h1>Ajouter un mouvement à l'opération
+		{{ operation.id }}</h1>
+
+	{{ form_start(form) }}
+
+
+	<button type="submit" class="btn btn-primary">Ajouter le mouvement</button>
+
+	{{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}New client{% endblock %}
+
+{% block body %}
+    <div class="col-xs-12">
+	<h3 class="header smaller lighter blue">Ajouter des clients </h3>
+
+    {{ include('client/_form.html.twig') }}
+
+     <button class="btn btn-white btn-info btn-bold">
+<font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+<a href="{{ path('app_client_index') }}" >Retour à la liste</a>
+</font></font>
+</button>  
+  {% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles for the confirmation form */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        textarea,
+        input[type="date"],
+        input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1 class="vente-title">Confirmation de réservation</h1>
+
+    <form method="post" action="{{ path('app_confirmation_reservation', {'id': reservation.id}) }}">
+        <div>
+            <label for="confirmation" class="section-title">Confirmation :</label>
+            <textarea id="confirmation" name="confirmation" rows="6" cols="60" readonly>
+Bonjour,
+
+Nous avons le plaisir de vous confirmer la réservation de vos devises. Vous êtes attendu(e) à notre agence le [date à sélectionner] à [heure à sélectionner] pour récupérer votre commande.
+
+
+            </textarea>
+            <br>
+            <label for="date" class="section-title">Date :</label>
+            <input type="date" id="date" name="date" required>
+            <br>
+            <label for="heure" class="section-title">Heure :</label>
+            <input type="time" id="heure" name="heure" required>
+        </div>
+        <button type="submit2" class="green">Confirmer la réservation</button>
+    </form>
+
+    <script>
+        // Fonction pour mettre à jour la zone de texte "confirmation" avec la date et l'heure sélectionnées
+        function updateConfirmationText() {
+            var date = document.getElementById("date").value;
+            var heure = document.getElementById("heure").value;
+
+            // Mettre à jour le contenu de la zone de texte "confirmation"
+            var confirmationText = "Bonjour,\n\nNous avons le plaisir de vous confirmer la réservation de vos devises. Vous êtes attendu(e) à notre agence le " + date + " à " + heure + " pour récupérer votre commande.\n\nNous vous remercions .\n\nCordialement,";
+            document.getElementById("confirmation").value = confirmationText;
+        }
+
+        // Mettre à jour le texte initial lors du chargement de la page
+        updateConfirmationText();
+
+        // Ajouter des événements pour mettre à jour le texte lorsqu'une date ou une heure est sélectionnée
+        document.getElementById("date").addEventListener("change", updateConfirmationText);
+        document.getElementById("heure").addEventListener("change", updateConfirmationText);
+    </script>
+{% endblock %}

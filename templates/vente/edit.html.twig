@@ -1,0 +1,130 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Édition de Vente{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Ajoutez votre CSS personnalisé ici */
+        /* Par exemple : */
+        /* ... Votre CSS ... */
+    </style>
+{% endblock %}
+
+{% block body %}
+   <div class="container">
+        <h1 class="achat-title">Édition de Vente</h1>
+        <form method="post" action="{{ path('app_vente_edit', {'id': operation.id}) }}" class="vente-form">
+            <section>
+                <h2 class="section-title">Ajouter les informations du client:</h2>
+                <div class="form-group">
+              
+
+                    <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" name="nom" class="form-control" required value="{{ operation.client.nom }}">
+                </div>
+                <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" id="prenom" name="prenom" class="form-control" required value="{{ operation.client.prenom }}">
+                </div>
+                <div class="form-group">
+                    <label for="numcin">Numéro CIN</label>
+                    <input type="text" id="numcin" name="numcin" class="form-control" required value="{{ operation.client.numcin }}">
+                </div>
+                <div class="form-group">
+                    <label for="dateCin">Date CIN</label>
+                    <input type="date" id="dateCin" name="dateCin" class="form-control" required value="{{ operation.client.datecin|date('Y-m-d') }}">
+                </div>
+                <div class="form-group">
+                    <label for="numpasseport">Numéro passeport</label>
+                    <input type="text" id="numpasseport" name="numpasseport" class="form-control" required value="{{ operation.client.numpasseport }}">
+                </div>
+                <div class="form-group">
+                    <label for="datepasseport">Date passeport</label>
+                    <input type="date" id="datepasseport" name="datepasseport" class="form-control" required value="{{ operation.client.datepasseport|date('Y-m-d') }}">
+                </div>
+                <div class="form-group">
+                    <label for="datevalidpasport">Date validité passeport</label>
+                    <input type="date" id="datevalidpasport" name="datevalidpasport" class="form-control" required value="{{ operation.client.datevalidpasport|date('Y-m-d') }}">
+                  </div>
+                </div>
+            </section>
+            <section>
+                <h2 class="section-title">Edit Operation:</h2>
+                <div class="form-group">
+                    <label for="date">Date de l'opération</label>
+                    <input type="date" id="date" name="date" value="{{ operation.createdAt|date('Y-m-d') }}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="devise">Devises</label>
+                    <select id="devise" name="code" class="form-control">
+                        <option value="">Choisir la devise</option>
+                        {% for devise in devises %}
+                            {% if devise.code != 'TND' %}
+                                <option value="{{ devise.code }}" {% if devise.code == operation.devise.code %}selected{% endif %}>
+                                    {{ devise.libelle }} ({{ devise.code }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="caisse">Caisse :</label>
+                    <select class="form-control" id="caisse" name="caisse">
+                        <option value="">Choisir la caisse</option>
+                        {% for caisse in caisses %}
+                            <option value="{{ caisse.id }}" {% if caisse.id == operation.caisse.id %}selected{% endif %}>{{ caisse.libelle }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Montant</label>
+                    <input type="number" id="montant" name="montant" step="0.01" placeholder="Saisir le montant" class="form-control" value="{{ operation.valeurDevise / 2 }}">
+                </div>
+                <div id="container-elements">
+                    <div id="solde-caisse">
+                        <p id="solde-caisse"></p>
+                    </div>
+                </div>
+                 <div id="converted-amount">
+    {% if convertedAmount %}
+        Montant Converti : <span id="montant-converti">{{ convertedAmount }}</span><br>
+        Taux de vente : <span id="taux-vente">{{ valeurVente }}</span>
+    {% endif %}
+</div>
+            </section>
+        </form>
+        <ul class="edit">
+    {% for document in operation.documents %}
+        <li>
+            Document: {{ document.libelle }}
+            <a href="{{ path('app_document_download', {'id': document.id}) }}">Télécharger</a>
+        </li>
+    {% endfor %}
+</ul>
+    </div>
+
+  
+   
+{% endblock %}
+
+{% block javascripts %}
+     {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    <script>
+      const montantConvertiElement = document.getElementById("montant-converti");
+    const tauxVenteElement = document.getElementById("taux-vente");
+
+    // Récupérer les valeurs du montant converti et du taux de vente
+    const montantConverti = parseFloat(montantConvertiElement.textContent);
+    const tauxVente = parseFloat(tauxVenteElement.textContent);
+
+    // Afficher le montant converti et le taux de vente dans la console (à titre d'exemple)
+    console.log("Montant Converti :", montantConverti);
+    console.log("Taux de vente :", tauxVente);
+    </script>
+{% endblock %}

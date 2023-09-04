@@ -1,0 +1,34 @@
+{% block title %}societés
+{% endblock %}
+
+{% block body %}
+	<div class="col-xs-12">
+		<h3 class="header smaller lighter blue">Supprimer  societé
+		</h3>
+	</div>
+
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ societe.id }}</td>
+			</tr>
+			<tr>
+				<th>Raisonsociale</th>
+				<td>{{ societe.raisonsociale }}</td>
+			</tr>
+		</tbody>
+	</table>
+ <div class="row">
+    <div class="col-sm-6">
+        <a href="{{ path('app_societe_index') }}" class="btn btn-primary">
+            Retour à la liste
+        </a>
+    </div>
+    <div class="col-sm-6 text-right">
+        {{ include('societe/_delete_form.html.twig', {'button_text': 'Supprimer', 'button_class': 'btn btn-danger'}) }}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,150 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Liste des Utilisateurs{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap5.min.css">
+
+{% endblock %}
+
+{% block body %}
+
+ <div class="col-xs-12">
+	<h3 class="header smaller lighter blue">Liste des clients </h3>
+<a href="{{ path('app_client_new') }}" class="bleu"><i class="ace-icon fa fa-search-plus bigger-130"></i></a>
+
+   <div class="table-responsive">
+      <table id="user-table" class="table table-striped table-bordered table-hover">
+      <div class="table-header">
+											Résultats pour "Derniers enregistrés"
+										</div>
+         <thead>
+            <tr>
+               
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Numéro cin</th>
+                <th>Numéro passeport</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients %}
+            <tr>
+                <td>{{ client.nom }}</td>
+                <td>{{ client.prenom }}</td>
+                <td>{{ client.numcin }}</td>
+                <td>{{ client.numpasseport }}</td>
+         
+                <td>
+    <div class="hidden-sm hidden-xs action-buttons">
+     <a href="{{ path('app_client_show', {'id': client.id}) }}" class="red" title="Supprimer"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>
+      <a href="{{ path('app_client_edit', {'id': client.id}) }}" class="green" title="Modifier"><i class="ace-icon fa fa-pencil bigger-130"></i></a>
+        <a href="{{ path('app_client_operations', {'id': client.id}) }}" class="bleu" title="Modifier">Opérations</a>
+
+  </div>
+   </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+      </table>
+   </div>
+   
+       </div>
+       
+
+{% endblock %}
+
+{% block javascripts %}
+   {{ parent() }}
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+   <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.bootstrap5.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+   <script>
+        $(document).ready(function() {
+          $('#user-table').DataTable({
+            "dom": "<'row'<'col-md-6'B><'col-md-6'f>>" + "<'row'<'col-md-12'tr>>" + "<'row'<'col-md-5'i><'col-md-7'p>>",
+            "buttons": [
+              {
+                extend: 'pdfHtml5',
+                className: 'btn btn-sm btn-danger',
+                text: '<i class="fa fa-file-pdf-o"></i> ',
+                title: 'Export PDF',
+                exportOptions: {
+                  columns: ':visible'
+                }
+              },
+              {
+                extend: 'excelHtml5',
+                className: 'btn btn-sm btn-success',
+                text: '<i class="fa fa-file-excel-o"></i> ',
+                title: 'Export Excel',
+                exportOptions: {
+                  columns: ':visible'
+                }
+              },
+              
+              {
+                extend: 'csv',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fa fa-database"></i> ',
+                title: 'Export CSV',
+                exportOptions: {
+                  columns: ':visible'
+                }
+              },
+              {
+                extend: 'copy',
+                className: 'btn btn-sm btn-primary',
+                text: '<i class="fa fa-copy"></i> ',
+                title: 'Copy',
+                exportOptions: {
+                  columns: ':visible'
+                }
+              },
+              {
+                extend: 'print',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fa fa-print"></i> ',
+                title: 'Print',
+                exportOptions: {
+                  columns: ':visible'
+                }
+              },
+              {
+                text: '<i class="fa fa-file-text"></i> ',
+                className: 'btn btn-primary btn-sm my-class',
+                titleAttr: 'Export TXT',
+                action: function ( e, dt, node, config ) {
+                    var data = dt.buttons.exportData();
+                    $.fn.dataTable.fileSave(new Blob([data.body.join("\n")]), 'table.txt');
+                }
+              }
+            ],
+                   "pagingType": "full_numbers" // Ajout de la pagination
+
+          });
+
+  $('button').mouseover(function() {
+    var title = $(this).attr('title');
+    $(this).attr('data-toggle', 'tooltip').attr('title', title).tooltip('show');
+  }).mouseout(function() {
+    $(this).attr('data-toggle', 'tooltip').attr('title', '').tooltip('hide');
+  });
+});
+</script>
+             
+             
+{%endblock%}

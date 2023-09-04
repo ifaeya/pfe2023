@@ -1,0 +1,51 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Client
+{% endblock %}
+
+{% block body %}
+	<h1>Client</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ client.id }}</td>
+			</tr>
+			<tr>
+				<th>Nom</th>
+				<td>{{ client.nom }}</td>
+			</tr>
+			<tr>
+				<th>Prenom</th>
+				<td>{{ client.prenom }}</td>
+			</tr>
+			<tr>
+				<th>Numcin</th>
+				<td>{{ client.numcin }}</td>
+			</tr>
+			<tr>
+				<th>Datecin</th>
+				<td>{{ client.datecin ? client.datecin|date('Y-m-d') : '' }}</td>
+			</tr>
+			<tr>
+				<th>Numpasseport</th>
+				<td>{{ client.numpasseport }}</td>
+			</tr>
+			<tr>
+				<th>Datepasseport</th>
+				<td>{{ client.datepasseport ? client.datepasseport|date('Y-m-d') : '' }}</td>
+			</tr>
+			<tr>
+				<th>Datevalidpasport</th>
+				<td>{{ client.datevalidpasport ? client.datevalidpasport|date('Y-m-d') : '' }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('app_client_index') }}">back to list</a>
+
+	<a href="{{ path('app_client_edit', {'id': client.id}) }}">edit</a>
+
+	{{ include('client/_delete_form.html.twig') }}
+{% endblock %}

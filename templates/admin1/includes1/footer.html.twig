@@ -1,0 +1,36 @@
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-content">
+            <span class="bigger-120">
+                <span class="blue bolder">Application As</span>
+                &copy; {{ "now"|date("Y") }} All rights reserved.
+            </span>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+</div><!-- /.main-container -->
+
+<!-- Scripts de base -->
+
+<!--[if !IE]> -->
+<script src="{{ asset('assets1/js/jquery.min.js') }}"></script>
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="{{ asset('assets1/js/jquery.min.js') }}"></script>
+<![endif]-->
+
+<script type="text/javascript">
+    if ('ontouchstart' in document.documentElement) document.write("<script src='{{ asset('assets1/js/jquery.mobile.custom.min.js') }}'>" + "<" + "/script>");
+</script>
+<script src="{{ asset('assets1/js/bootstrap.min.js') }}"></script>
+
+<!-- Scripts spécifiques à la page -->
+
+<!-- Scripts Ace -->
+<script src="{{ asset('assets1/js/ace-elements.min.js') }}"></script>
+<script src="{{ asset('assets1/js/ace.min.js') }}"></script>

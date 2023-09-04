@@ -1,0 +1,13 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Edit Typeoperation{% endblock %}
+
+{% block body %}
+    <h1>Edit Typeoperation</h1>
+
+    {{ include('typeoperation/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_typeoperation_index') }}">back to list</a>
+
+    {{ include('typeoperation/_delete_form.html.twig') }}
+{% endblock %}

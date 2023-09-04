@@ -1,0 +1,154 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+/* Styles spécifiques pour la page d'alimentation de caisse */
+
+/* Styling pour le formulaire */
+#alimentationForm {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#alimentationForm label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#alimentationForm select,
+#alimentationForm input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+/* Boutons */
+.btn-primary, .btn-warning {
+    padding: 10px 20px;
+    margin-right: 10px;
+}
+
+/* Messages d'alerte */
+.alert {
+    padding: 10px;
+    margin-top: 15px;
+}
+
+/* Tableau des caisses */
+table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f5f5f5;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <h1 class="vente-title">Alimenter une caisse</h1>
+
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form action="{{ path('app_alimentation') }}" method="POST" id="alimentationForm">
+        <div>
+            <label for="caisse">Caisse :</label>
+            <select id="caisse" name="caisse">
+                <option value="">Choisir la caisse</option>
+                {% for caisse in caisses %}
+                    <option value="{{ caisse.libelle }}">{{ caisse.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="montant">Montant d'alimentation :</label>
+            <input type="number" id="montant" name="montant" value="{{ montantAlimentation ?? '' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Alimenter</button>
+        <a href="{{ path('app_alimentation') }}" class="btn btn-warning">Réinstaller</a>
+    </form>
+
+    <div id="errorContainer"></div>
+
+    <h2>Caisses disponibles</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Libellé</th>
+                <th>Solde</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for caisse in caisses %}
+                <tr>
+                    <td>{{ caisse.libelle }}</td>
+                    <td>{{ caisse.solde }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Validation du formulaire d'alimentation de caisse
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('alimentationForm');
+
+    form.addEventListener('submit', function(event) {
+        var caisse = document.getElementById('caisse');
+        var montant = document.getElementById('montant');
+
+        var errors = [];
+
+        if (caisse.value === '') {
+            errors.push('Veuillez choisir une caisse');
+            caisse.classList.add('error');
+        } else {
+            caisse.classList.remove('error');
+        }
+
+        if (montant.value === '') {
+            errors.push('Veuillez saisir un montant');
+            montant.classList.add('error');
+        } else {
+            montant.classList.remove('error');
+        }
+
+        if (errors.length > 0) {
+            event.preventDefault();
+            var errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = '';
+            errors.forEach(function(error) {
+                var errorElement = document.createElement('p');
+                errorElement.textContent = error;
+                errorContainer.appendChild(errorElement);
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

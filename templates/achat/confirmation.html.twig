@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de l'achat
+{% endblock %}
+
+{% block body %}
+	<h1>Confirmation de l'achat</h1>
+
+	<h2>Informations du client</h2>
+	<ul>
+		<li>
+			<strong>Nom :</strong>
+			{{ client.nom }}</li>
+		<li>
+			<strong>Prénom :</strong>
+			{{ client.prenom }}</li>
+		<li>
+			<strong>Numéro CIN :</strong>
+			{{ client.numcin }}</li>
+		<li>
+			<strong>Date CIN :</strong>
+			{{ client.datecin|date('d/m/Y') }}</li>
+		<li>
+			<strong>Numéro passeport :</strong>
+			{{ client.numpasseport }}</li>
+		<li>
+			<strong>Date passeport :</strong>
+			{{ client.datepasseport|date('d/m/Y') }}</li>
+		<li>
+			<strong>Date de validité du passeport :</strong>
+			{{ client.datevalidpasport|date('d/m/Y') }}</li>
+	</ul>
+
+	<h2>Détails de la transaction</h2>
+	<ul>
+		<li>
+			<strong>Devise du client :</strong>
+			{{ client_devise }}</li>
+		<li>
+			<strong>Valeur de la devise :</strong>
+			{{ valeur_devise_client|number_format(2) }}
+			{{ client_devise }}</li>
+		<li>
+			<strong>Devise souhaitée :</strong>
+			{{ devise_voulue }}</li>
+		<li>
+			<strong>Taux de change :</strong>
+			{{ taux_de_change|number_format(2) }}
+			{{ devise_voulue }}/{{ client_devise }}</li>
+		<li>
+			<strong>Équivalent :</strong>
+			{{ equivalent|number_format(2) }}
+			{{ devise_voulue }}</li>
+		<li>
+			<strong>Type de reçu ou bordereau :</strong>
+			{{ receipt_type }}</li>
+		{% if declaration_type is not null %}
+			<li>
+				<strong>Type de déclaration en douane :</strong>
+				{{ declaration_type }}</li>
+			<li>
+				<strong>Validité :</strong>
+				{{ max_validity }}</li>
+		{% endif %}
+	</ul>
+
+	<a href="{{ path('app_achat_index') }}">Retour à la page d'achat</a>
+{% endblock %}

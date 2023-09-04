@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ArchiveCoursdevises{% endblock %}
+
+{% block body %}
+    <h1>Create new ArchiveCoursdevises</h1>
+
+    {{ include('archive_coursdevises/_form.html.twig') }}
+
+    <a href="{{ path('app_archive_coursdevises_index') }}">back to list</a>
+{% endblock %}

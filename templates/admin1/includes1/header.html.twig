@@ -1,0 +1,466 @@
+
+
+<body class="no-skin">
+	<div id="navbar" class="navbar navbar-default ace-save-state">
+		<div class="navbar-container ace-save-state" id="navbar-container">
+			
+
+			<div class="navbar-header pull-left">
+    <a href="{{ path('app_accueil') }}" class="navbar-brand">
+        <small>
+            <i class="fa fa-leaf"></i>
+            Bureau De Change
+        </small>
+    </a>
+</div>
+
+			<div class="navbar-buttons navbar-header pull-right" role="navigation">
+				<div class="btn-group">
+					<button type="button" class="btn btn-purple dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="ace-icon fa fa-cog"></i>
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li>
+							<a
+								href="/profil/{nom}/">
+								<!-- Remplacez "/profile/edit" par l'URL de la page de modification de profil -->
+								<i class="ace-icon fa fa-user"></i>
+								Profil
+							</a>
+						</li>
+						<li>
+							<a href="/logout">
+								<i class="ace-icon fa fa-power-off"></i>
+								Déconnexion
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- /.navbar-container -->
+
+
+	<div class="main-container ace-save-state" id="main-container">
+
+
+		<div id="sidebar" class="sidebar                  responsive                    ace-save-state" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+
+
+			<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+				<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+					<button class="btn btn-success"></button>
+
+					<button class="btn btn-info"></button>
+
+					<button class="btn btn-warning"></button>
+
+					<button class="btn btn-danger"></button>
+				</div>
+
+				<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+					<span class="btn btn-success"></span>
+				</div>
+			</div>
+			<!-- /.sidebar-shortcuts -->
+
+			
+				<ul class="nav nav-list" style="top: 0px;">
+{% if is_granted ('ROLE_USER') and not is_granted ('ROLE_ADMIN') %}
+					<li class="">
+						<a href="{{path('app_home')}}">
+							<i class="menu-icon fa fa-tachometer"></i>
+							<span class="menu-text">
+								<font style="vertical-align: inherit;">
+									<font style="vertical-align: inherit;">Tableau de bord</font>
+								</font>
+							</span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+				{% endif %}
+				{% if is_granted ('ROLE_ADMIN') %}
+					<ul class="nav nav-list" style="top: 0px;">
+						<li class="">
+							<a href="{{path('app_admin')}}">
+								<i class="menu-icon fa fa-tachometer"></i>
+								<span class="menu-text">
+									<font style="vertical-align: inherit;">
+										<font style="vertical-align: inherit;">Tableau de bord</font>
+									</font>
+								</span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+					{% endif %}
+
+					
+						<ul class="nav nav-list" style="top: 0px;">
+							<li class="">
+    <a href="{{ path('app_profil_index', {'nom': 'valeur_du_nom'}) }}">
+        <i class="menu-icon fa fa-user"></i>
+        <span class="menu-text">
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">Profil</font>
+            </font>
+        </span>
+    </a>
+    <b class="arrow"></b>
+</li>
+
+				
+						{% if is_granted ('ROLE_USER') or  is_granted ('ROLE_ADMIN') or  is_granted ('ROLE_MODERATEUR') %}
+							<li class="">
+								<a href="{{path('app_reservation_new')}}">
+								<i class="fa fa-ticket" aria-hidden="true"></i>
+									<span class="menu-text">
+										<font style="vertical-align: inherit;">
+											<font style="vertical-align: inherit;">Réserver</font>
+										</font>
+									</span>
+								</a>
+								<b class="arrow"></b>
+							</li>
+						{% endif %}
+						{% if is_granted ('ROLE_USER') or is_granted ('ROLE_ADMIN') %}
+							<li class="">
+								<a href="{{path('app_achat_index')}}">
+									<i class="menu-icon fa fa-shopping-cart"></i>
+									<span class="menu-text">
+										<font style="vertical-align: inherit;">
+											<font style="vertical-align: inherit;">Achat</font>
+										</font>
+									</span>
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="{{path('app_vente_index')}}">
+									<i class="menu-icon fa fa-money"></i>
+									<span class="menu-text">
+										<font style="vertical-align: inherit;">
+											<font style="vertical-align: inherit;">Vente</font>
+										</font>
+									</span>
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+						{% endif %}
+						{% if is_granted ('ROLE_ADMIN') %}
+							<li class="">
+								<a href="{{path('app_stock_index')}}">
+									<i class="menu-icon fa fa-archive"></i>
+									<span class="menu-text">
+										<font style="vertical-align: inherit;">
+											<font style="vertical-align: inherit;">Stock</font>
+										</font>
+									</span>
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						{% endif %}
+						
+							<li class="">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-cogs"></i>
+									<span class="menu-text">
+										<font style="vertical-align: inherit;">
+											<font style="vertical-align: inherit;">
+												Configuration
+											</font>
+										</font>
+									</span>
+
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+
+								<b class="arrow"></b>
+
+								<ul class="submenu">
+									<li class="">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Utilisateurs
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											{% if is_granted ('ROLE_ADMIN') %}
+												<li class="">
+													<a href="/user">
+														<i class="menu-icon fa fa-caret-right"></i>
+														Liste des utlisateurs
+													</a>
+
+													<b class="arrow"></b>
+												</li>
+
+											{% endif %}
+										</ul>
+									</li>
+
+
+									<li class="">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Clients
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											<li class="">
+												<a href="/client/">
+													<i class="menu-icon fa fa-caret-right"></i>
+													Liste des clients
+												</a>
+
+												<b class="arrow"></b>
+											</li>
+
+
+										</ul>
+									</li>
+									<li class="">
+										<a href="" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Devises
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											<li class="">
+												<a href="/devises/">
+													<i class="menu-icon fa fa-caret-right"></i>
+													Liste des devises
+												</a>
+
+												<b class="arrow"></b>
+											</li>
+
+
+										</ul>
+									</li>
+									<li class="">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Cours devises
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											<li class="">
+												<a href="/coursdevises/">
+													<i class="menu-icon fa fa-caret-right"></i>
+													Liste des cours devises
+												</a>
+
+												<b class="arrow"></b>
+											</li>
+
+
+										</ul>
+									</li>
+									<li class="">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Gestion des Caisse
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											<li class="">
+												<a href="/caisse/">
+													<i class="menu-icon fa fa-caret-right"></i>
+													Liste des caisse
+												</a>
+
+												<b class="arrow"></b>
+											</li>
+
+
+										</ul>
+									</li>
+									<li class="">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Archive cours devises
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											<li class="">
+												<a href="/archive/coursdevises/">
+													<i class="menu-icon fa fa-caret-right"></i>
+													Liste des archives
+												</a>
+
+												<b class="arrow"></b>
+											</li>
+
+
+										</ul>
+									</li>
+
+									<li class="">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-caret-right"></i>
+
+											Réservations
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+
+										<b class="arrow"></b>
+
+										<ul class="submenu">
+											<li class="">
+												<a href="/reservation/">
+													<i class="menu-icon fa fa-caret-right"></i>
+													Liste des réservations
+												</a>
+
+												<b class="arrow"></b>
+											</li>
+
+										</ul>
+
+									</li>
+
+								</li>
+
+							</li>
+
+
+						</ul>
+					
+					{% if is_granted ('ROLE_ADMIN') or is_granted ('ROLE_MODERATEUR')  %}
+						<li class="">
+
+							<a href="{{path('app_reporting')}}">
+								<i class="menu-icon fa fa-bar-chart"></i>
+								<span class="menu-text">
+									<font style="vertical-align: inherit;">
+										<font style="vertical-align: inherit;">Reporting</font>
+									</font>
+								</span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+					{% endif %}
+					{% if is_granted ('ROLE_ADMIN') %}
+						<li class="">
+							<a href="#" class="dropdown-toggle">
+								<i class="menu-icon fa fa-calculator"></i>
+								<span class="menu-text">
+									<font style="vertical-align: inherit;">
+										<font style="vertical-align: inherit;">
+											Comptabilité
+										</font>
+									</font>
+								</span>
+
+								<b class="arrow fa fa-angle-down"></b>
+							</a>
+
+							<b class="arrow"></b>
+
+							<ul class="submenu">
+
+								<li class="">
+									<a href="/alimentation/">
+										<i class="menu-icon fa fa-bolt"></i>
+										<span class="menu-text">
+											<font style="vertical-align: inherit;">
+												<font style="vertical-align: inherit;">Alimentation</font>
+											</font>
+										</span>
+									</a>
+
+									<b class="arrow"></b>
+								</li>
+
+								<li class="">
+									<a href="/transfert/">
+										<i class="menu-icon fa fa-exchange"></i>
+										<span class="menu-text">
+											<font style="vertical-align: inherit;">
+												<font style="vertical-align: inherit;">Transfert</font>
+											</font>
+										</span>
+									</a>
+
+									<b class="arrow"></b>
+								</li>
+
+
+								<li class="">
+									<a href="/operation/">
+										<i class="menu-icon fa fa-history"></i>
+										<span class="menu-text">
+											<font style="vertical-align: inherit;">
+												<font style="vertical-align: inherit;">Journal des opérations</font>
+											</font>
+										</span>
+									</a>
+
+									<b class="arrow"></b>
+								</li>
+							</ul>
+						</li>
+					{% endif %}
+				</ul>
+			</li>
+
+
+		</body>
+		<!-- /.nav-list -->
+		<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+			<i id="sidebar-toggle-icon" class="ace-save-state ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+		</div>
+	</div>
+	<div class="main-content">
+		<div class="main-content-inner">
+			<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+				<ul class="breadcrumb">
+					<li>
+						<i class="menu-icon fa fa-tachometer"></i>
+						<a href="/home/">Tableau de bord</a>
+					</li>
+					      <li class="active" id="current-page"></li>
+				</ul>
+				<!-- /.breadcrumb -->
+			</div>
+
+
+		
+
+		

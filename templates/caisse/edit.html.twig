@@ -1,0 +1,27 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Edit Caisse
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="col-xs-12">
+		<h3 class="header smaller lighter blue">Modifier caisse
+		</h3>
+	</div>
+
+
+	{{ include('caisse/_form.html.twig', {'button_label': 'Update'}) }}
+
+	<button class="btn btn-white btn-info btn-bold">
+		<font style="vertical-align: inherit;">
+			<font style="vertical-align: inherit;">
+				<a href="{{ path('app_caisse_index') }}">
+					<a href="{{ path('app_caisse_index') }}">Retour à la liste</a>
+				</a>
+
+			</font>
+		</font>
+	</button>
+{% endblock %}

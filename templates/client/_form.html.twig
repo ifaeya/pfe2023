@@ -1,0 +1,98 @@
+{% block head %}
+
+  <style>
+    form {
+      max-width: 1000px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .custom-margin {
+      margin-top: 30px;
+    }
+    .container {
+      margin-bottom: 100px;
+    }
+    
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea,
+    form input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    form button[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    form button[type="submit"]:hover {
+      background-color: #0069d9;
+    }
+
+    .is-invalid {
+      border-color: red !important;
+    }
+  </style>
+{% endblock %}
+
+{{ form_start(form) }}
+{{ form_widget(form) }}
+ <div class="row">
+    <div class="form-group">
+      <div class="row">
+      <div class="row">
+    <div class="form-group">
+        <div class="col-sm-offset-6 col-sm-10">
+            <button type="submit" class="btn btn-white btn-info btn-bold">
+                <i class="ace-icon fa fa-floppy-o bigger-120 blue"></i>
+                <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Enregistrer</font></font>
+            </button>
+        </div>
+    </div>
+</div>
+      </div>
+    </div>
+  </div>
+{{ form_end(form) }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    const form = document.querySelector('form');
+    const button = document.querySelector('button[type="submit"]');
+
+    // empêche le formulaire d'être soumis si la validation ne réussit pas
+    form.addEventListener('submit', (event) => {
+      if (!validateForm()) {
+        event.preventDefault();
+      }
+    });
+
+    // vérifie si le formulaire est valide
+    function validateForm() {
+      let isValid = true;
+
+      // vérifie chaque champ du formulaire
+      form.querySelectorAll('input, select, textarea').forEach((input) => {
+        if (input.required && !input.value.trim()) {
+          input.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+        }
+      });
+
+      return isValid;
+    }
+  });
+</script>

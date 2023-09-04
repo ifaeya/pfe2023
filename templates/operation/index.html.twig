@@ -1,0 +1,139 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Liste des Utilisateurs{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap5.min.css">
+{% endblock %}
+
+{% block body %}
+	
+		<h3  class="vente-title">Liste des opérations</h3>
+
+
+		<div class="table-responsive">
+			<table id="user-table" class="table table-striped table-bordered table-hover">
+				<div class="table-header">Résultats pour "Derniers enregistrés"</div>
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>CreatedAt</th>
+						<th>Client</th>
+						<th>Type opération</th>
+						<th>Mouvement</th>
+							<th>Status</th>
+							<th>Documents</th>
+						<th>actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for operation in operations %}
+						<tr>
+							<td>{{ operation.id }}</td>
+							<td >
+								{{ operation.createdAt ? operation.createdAt|date('Y-m-d H:i:s') : '' }}
+							</td>
+							{% if operation.client is defined and operation.client is not null %}
+								<td>{{ operation.client.numcin }}</td>
+							{% else %}
+								<td>N/A</td>
+							{% endif %}
+							<td>{{ operation.typeoperation }}</td>
+							<td>
+								<ul>
+									{% for mouvement in operation.mouvements %}
+										<li>
+										{{mouvement.caisse}}<br>
+											{{ mouvement.sensMouvement }} :
+											{% if mouvement.devise.code is defined and mouvement.devise.code %}
+
+											{{ mouvement.devise.code }}{% else %}
+													null
+												{% endif %}<br>
+											Montant: {{ mouvement.valeurDevise }}<br>
+											Taux de change :
+												{% if mouvement.devise.valeurachat is defined and mouvement.devise.valeurachat %}
+													{{ mouvement.devise.valeurachat }}
+												
+											{% else %}
+												null
+											{% endif %}
+										</li>
+									{% endfor %}
+								</ul>
+							</td>
+							<td>{{ operation.status }}</td>
+						<td>
+    <ul>
+        {% for document in operation.documents %}
+            <li>
+                {{ document.libelle }}
+                {% if document.isImage() or document.isPDF() %}
+                    <a href="{{ path('app_download_document', {'id': document.id}) }}" class="btn btn-sm btn-success" title="Télécharger">
+                        <i class="fa fa-download"></i> 
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</td>
+							<td>
+								<div class="hidden-sm hidden-xs action-buttons">
+								 <a href="{{ path('app_achat_annuler', {'id': operation.id}) }}" class="blue" title="Annuler">
+                            Annuler
+                        </a>
+									<a href="{{ path('app_operation_delete', {'id': operation.id}) }}" class="red" title="Supprimer">
+Supprimer									</a>
+								</div>
+						{% if operation.typeoperation.libelle == 'vente' %}
+    <a href="{{ path('app_vente_edit', {'id': operation.id}) }}">Editer </a>
+{% endif %}
+
+{% if operation.typeoperation.libelle == 'achat' %}
+    <a href="{{ path('app_achat_edit', {'id': operation.id}) }}">Editer</a>
+{% endif %}
+
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="3">no records found</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.bootstrap5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#user-table').DataTable({
+				"dom": "<'row'<'col-md-6'B><'col-md-6'f>>" + "<'row'<'col-md-12'tr>>" + "<'row'<'col-md-5'i><'col-md-7'p>>",
+				"buttons": [],
+				"pagingType": "full_numbers" // Ajout de la pagination
+			});
+
+			$('button').mouseover(function () {
+				var title = $(this).attr('title');
+				$(this).attr('data-toggle', 'tooltip').attr('title', title).tooltip('show');
+			}).mouseout(function () {
+				$(this).attr('data-toggle', 'tooltip').attr('title', '').tooltip('hide');
+			});
+		});
+	</script>
+{% endblock %}

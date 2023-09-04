@@ -1,0 +1,131 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+/* Styles spécifiques pour la page de transfert de solde */
+
+/* ... (votre CSS) ... */
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <h1 class="vente-title">Transférer le solde</h1>
+
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form action="#" method="POST" id="transfertForm">
+        <div>
+            <label for="caisseSource">Caisse source :</label>
+            <select id="caisseSource" name="caisse_depart">
+                <option value="">Choisir la caisse</option>
+                {% for caisse in caisses %}
+                    <option value="{{ caisse.libelle }}">{{ caisse.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="caisseDestination">Caisse destination :</label>
+            <select id="caisseDestination" name="caisse_arrivee">
+                <option value="">Choisir la caisse</option>
+                {% for caisse in caisses %}
+                    <option value="{{ caisse.libelle }}">{{ caisse.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="montant">Montant envoyé :</label>
+            <input type="number" id="montant" name="montant" value="{{ montantenvoye ?? '' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Transférer</button>
+       <a href="{{ path('app_transfert') }}" class="btn btn-warning" onclick="window.location.href = '{{ path('app_transfert') }}'; return false;">Réinstaller</a>
+
+    </form>
+
+    <div id="errorContainer"></div>
+
+    {% if libelleCaisseDepart and libelleCaisseArrivee %}
+        <h2>Récapitulatif :</h2>
+        <p>Caisse de départ : {{ libelleCaisseDepart }}</p>
+        <p>Caisse d'arrivée : {{ libelleCaisseArrivee }}</p>
+        <p>Montant envoyé : {{ montantenvoye }}</p>
+       
+    {% endif %}
+
+    <h2>Caisses disponibles</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Libellé</th>
+                <th>Solde</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for caisse in caisses %}
+                <tr>
+                    <td>{{ caisse.libelle }}</td>
+                    <td>{{ caisse.solde }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Validation du formulaire de transfert de solde
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('transfertForm');
+
+    form.addEventListener('submit', function(event) {
+        var caisseSource = document.getElementById('caisseSource');
+        var caisseDestination = document.getElementById('caisseDestination');
+        var montant = document.getElementById('montant');
+
+        var errors = [];
+
+        if (caisseSource.value === '') {
+            errors.push('Veuillez choisir une caisse source');
+            caisseSource.classList.add('error');
+        } else {
+            caisseSource.classList.remove('error');
+        }
+
+        if (caisseDestination.value === '') {
+            errors.push('Veuillez choisir une caisse destination');
+            caisseDestination.classList.add('error');
+        } else {
+            caisseDestination.classList.remove('error');
+        }
+
+        if (montant.value === '') {
+            errors.push('Veuillez saisir un montant');
+            montant.classList.add('error');
+        } else {
+            montant.classList.remove('error');
+        }
+
+        if (errors.length > 0) {
+            event.preventDefault();
+            var errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = '';
+            errors.forEach(function(error) {
+                var errorElement = document.createElement('p');
+                errorElement.textContent = error;
+                errorContainer.appendChild(errorElement);
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

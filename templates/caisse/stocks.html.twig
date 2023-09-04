@@ -1,0 +1,54 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<h1>Stocks de la caisse "{{ caisse.libelle }}" :</h1>
+
+		{% if caisse.stocks is not empty %}
+			<table class="table">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Devise</th>
+
+						<th>Nom</th>
+						<th>Quantité</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for stock in caisse.stocks %}
+						<tr>
+							<td>
+								<img src="/images/{{ stock.devise.image }}" alt="" width="40" heigth="40"/>
+							</td>
+							<td>{{ stock.devise.code }}</td>
+
+							<td>{{ stock.name }}</td>
+							<td>{{ stock.quantity }}</td>
+
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p>Aucun stock associé à cette caisse.</p>
+		{% endif %}
+	</div>
+	<a href="{{ path('app_caisse_index') }}">Retour à la liste</a>
+
+{% endblock %}
+
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/jquery.min.js') }}"></script>
+	<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('js/custom.js') }}"></script>
+{% endblock %}

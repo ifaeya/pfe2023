@@ -1,0 +1,135 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Liste des Utilisateurs
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap5.min.css">
+
+{% endblock %}
+
+{% block body %}
+<div class="navbar-buttons navbar-header pull-right" role="navigation">
+
+	<a href="{{ path('app_caisse_close_all') }}" class="btn btn-danger" classs="red">
+		Fermer toutes les caisses
+	</a>
+
+	<a href="{{ path('app_caisse_open_all') }}" class="btn btn-success">Ouvrir toutes les caisses</a>
+</div>
+
+	<div class="col-xs-12">
+		<h3 class="header smaller lighter blue">Liste des caisses
+		</h3>
+		<div  role="navigation">
+  <button class="danger">
+    <a href="{{ path('app_caisse_new') }}">
+     Ajouter caisse 
+    </a>
+  </button>
+</div>
+
+		<div class="table-responsive">
+			<table id="user-table" class="table table-striped table-bordered table-hover">
+				<div class="table-header">
+					Résultats pour "Derniers enregistrés"
+				</div>
+				<thead>
+					<tr>
+
+						<th></th>
+						<th>Libelle</th>
+						<th>Solde</th>
+						<th>Devises</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for caisse in caisses %}
+						<tr>
+
+							<td class="small-td">
+								<img src="/images/{{ caisse.devises.image }}" alt="" width="40" heigth="40"/>
+							</td>
+							<td>{{ caisse.libelle }}</td>
+							<td>{{ caisse.solde }}</td>
+							<td>
+								{{caisse.devises.code}}</td>
+
+							
+   <td class="small-td">
+    <div class="hidden-sm hidden-xs action-buttons">
+        <select onchange="if (this.value) window.location.href=this.value" class="form-control input-sm">
+            <option value="" selected>Actions</option>
+            <option value="{{ path('app_caisse_edit', {'id': caisse.id}) }}">
+                <i class="ace-icon fa fa-pencil bigger-130"></i> Modifier
+            </option>
+            <option value="{{ path('app_caisse_show', {'id': caisse.id}) }}">
+                Détails
+            </option>
+            <option value="{{ path('caisse_stocks', {'id': caisse.id}) }}">
+                Stock
+            </option>
+            <option value="{{ path('app_caisse_delete', {'id': caisse.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                <i class="ace-icon fa fa-trash bigger-130"></i> Supprimer
+            </option>
+            <option value="{{ path('caisse_toggle', {'id': caisse.id, 'action': 'open'}) }}">
+                {% if caisse.fermee %}
+                    <i class="ace-icon fa fa-lock bigger-130"></i> Ouvrir
+                {% else %}
+                    <i class="ace-icon fa fa-unlock bigger-130"></i> Fermer
+                {% endif %}
+            </option>
+        </select>
+    </div>
+</td>
+
+
+
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4">no records found</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script>
+	$(document).ready(function () {
+$('#user-table').DataTable({
+"dom": "<'row'<'col-md-6'B><'col-md-6'f>>" + "<'row'<'col-md-12'tr>>" + "<'row'<'col-md-5'i><'col-md-7'p>>",
+"buttons": [],
+"pagingType": "full_numbers" // Ajout de la pagination
+
+});
+
+$('button').mouseover(function () {
+var title = $(this).attr('title');
+$(this).attr('data-toggle', 'tooltip').attr('title', title).tooltip('show');
+}).mouseout(function () {
+$(this).attr('data-toggle', 'tooltip').attr('title', '').tooltip('hide');
+});
+});
+</script>
+
+{%endblock%}

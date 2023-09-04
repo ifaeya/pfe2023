@@ -1,0 +1,183 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <section id="caisse-actions" class="section">
+                    <div class="mb-3">
+                        <a href="{{ path('app_caisse_close_all') }}" class="btn btn-danger red">
+                            Fermer toutes les caisses
+                        </a>
+                        <a href="{{ path('app_caisse_open_all') }}" class="btn btn-success">Ouvrir toutes les caisses</a>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-6">
+                <section id="currency-list" class="section">
+                    <h3 class="header smaller">Liste des cours</h3>
+                    <p id="demo"></p>
+                    <script>
+                        var today = new Date();
+                        var day = today.getDate();
+                        var month = today.getMonth() + 1;
+                        var year = today.getFullYear();
+                        var date = day + '/' + month + '/' + year;
+                        document.getElementById("demo").innerHTML = date;
+                    </script>
+                    <div class="table-responsive">
+                        <table id="my-table" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Devises</th>
+                                    <th>Code</th>
+                                    <th>Unité</th>
+                                    <th>Achat</th>
+                                    <th>Vente</th>
+                                    <th>Marge</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for coursdevise in coursdevises %}
+                                    <tr>
+                                        <td>
+                                            <img src="/images/{{ coursdevise.devises.image }}" alt="{{ coursdevise.devises.libelle }}" width="30" height="30" />
+                                            {{ coursdevise.devises.libelle }}
+                                        </td>
+                                        <td>{{ coursdevise.devises.code }}</td>
+                                        <td>{{ coursdevise.devises.unite }}</td>
+                                        <td>{{ coursdevise.valeurachat }}</td>
+                                        <td>{{ coursdevise.valeurvente }}</td>
+                                        <td>{{ coursdevise.getMarge() }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6">Aucun enregistrement trouvé</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <section id="currency-statistics" class="section">
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="chart" style="max-width: 100%;"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </section>
+        <section id="statistics" class="section">
+            <h1 class="display-4">Statistiques</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="lead">Nombre d'opérations d'achat : {{ nombreOperationsAchat }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="lead">Nombre d'opérations de vente : {{ nombreOperationsVente }}</p>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configuration du graphique
+            var ctx = document.getElementById('chart').getContext('2d');
+            var labels = [];
+            var valeursAchat = [];
+            var valeursVente = [];
+            
+            {% for coursdevise in coursdevises %}
+                labels.push('{{ coursdevise.createdAt|date('d/m/Y') }}');
+                valeursAchat.push('{{ coursdevise.valeurachat }}');
+                valeursVente.push('{{ coursdevise.valeurvente }}');
+            {% endfor %}
+            
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Valeur d\'achat',
+                            data: valeursAchat,
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true
+                        }, 
+                        {
+                            label: 'Valeur de vente',
+                            data: valeursVente,
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Valeur'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: [
+                    {% for coursdevise in coursdevises %}
+                    {
+                        title: '{{ coursdevise.devises.libelle }}',
+                        start: '{{ coursdevise.createdAt|date('Y-m-d') }}',
+                        url: '{{ path('app_coursdevises_index', {'id': coursdevise.id}) }}'
+                    },
+                    {% endfor %}
+                ],
+                // Personnalisation des styles pour le calendrier
+                eventBorderColor: 'rgb(30, 144, 255)',
+                eventBackgroundColor: 'rgba(30, 144, 255, 0.2)',
+                eventTextColor: 'rgb(30, 144, 255)',
+                eventClick: function (calEvent) {
+                    // Gérer le clic sur un événement ici
+                }
+            });
+        });
+    </script>
+{% endblock %}

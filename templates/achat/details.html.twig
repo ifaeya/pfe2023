@@ -1,0 +1,127 @@
+
+{# templates/achat/details.html.twig #}
+
+{% block stylesheets %}
+<style>
+    /* Your CSS styles go here */
+    
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 20px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+
+        .details-container {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #eae5d6;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .details-section {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .client-info, .amount-info {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .client-info p, .amount-info p {
+            margin: 10px 0;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .client-info p:first-child, .amount-info p:first-child {
+            font-weight: bold;
+        }
+
+        .print-button {
+            display: block;
+            width: 110px;
+            margin: 0 auto;
+            padding: 8px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+
+        .identifier-info {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .identifier-info p {
+            margin: 5px 0;
+        }
+
+    /* ... (your other CSS styles) ... */
+</style>
+{% endblock %}
+
+{% block body %}
+    <a class="return-button" href="{{ path('app_achat_index') }}">Retour à la page précédente</a>
+
+<div class="details-container">
+
+    <h1>Détails de l'achat</h1>
+    <div class="details-section client-info">
+        <p><strong>Nom du client:</strong> {{ nomClient }}</p>
+        {% if numcin and numpasseport %}
+            <div class="identifier-info">
+                <p><strong>Numéro CIN:</strong> {{ numcin }}</p>
+                <p><strong>Numéro Passeport:</strong> {{ numpasseport }}</p>
+            </div>
+        {% elseif numcin %}
+            <p><strong>Numéro CIN:</strong> {{ numcin }}</p>
+        {% elseif numpasseport %}
+            <p><strong>Numéro Passeport:</strong> {{ numpasseport }}</p>
+        {% endif %}
+    </div>
+
+    <div class="details-section amount-info">
+        <p><strong>Devise d'achat:</strong> {{ deviseAchat }}</p>
+        <p><strong>Taux d'achat:</strong> {{ valeurAchat }}</p>
+        <p><strong>Montant du client:</strong> {{ montantAchat }}</p>
+        <p><strong>Montant converti:</strong> {{ montantConverti }}</p>
+    </div>
+
+    {# Additional details can be added here using the .additional-details class #}
+</div>
+<a class="print-button" href="#" onclick="window.print()">Imprimer</a>
+{% endblock %}

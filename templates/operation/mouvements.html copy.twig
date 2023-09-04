@@ -1,0 +1,27 @@
+{% extends 'admin1/base.html.twig' %}
+
+{% block content %}
+	<h1>Mouvements associés à l'opération {{ operation.id }}</h1>
+	{% if mouvements|length > 0 %}
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Date</th>
+					<th>Sens du mouvement</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for mouvement in mouvements %}
+					<tr>
+						<td>{{ mouvement.id }}</td>
+						<td>{{ mouvement.createdAt|date('d/m/Y') }}</td>
+						<td>{{ mouvement.sensMouvement }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>Aucun mouvement associé à cette opération.</p>
+	{% endif %}
+{% endblock %}

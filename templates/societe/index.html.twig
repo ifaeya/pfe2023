@@ -1,4 +1,4 @@
-{% extends 'admin1/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Liste des sociétés
 {% endblock %}
@@ -75,77 +75,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
-<script>
-	$(document).ready(function () {
-$('#user-table').DataTable({
-"dom": "<'row'<'col-md-6'B><'col-md-6'f>>" + "<'row'<'col-md-12'tr>>" + "<'row'<'col-md-5'i><'col-md-7'p>>",
-"buttons": [
-{
-extend: 'pdfHtml5',
-className: 'btn btn-sm btn-danger',
-text: '<i class="fa fa-file-pdf-o"></i> ',
-title: 'Export PDF',
-exportOptions: {
-columns: ':visible'
-}
-},
-{
-extend: 'excelHtml5',
-className: 'btn btn-sm btn-success',
-text: '<i class="fa fa-file-excel-o"></i> ',
-title: 'Export Excel',
-exportOptions: {
-columns: ':visible'
-}
-},
-
-{
-extend: 'csv',
-className: 'btn btn-primary btn-sm',
-text: '<i class="fa fa-database"></i> ',
-title: 'Export CSV',
-exportOptions: {
-columns: ':visible'
-}
-},
-{
-extend: 'copy',
-className: 'btn btn-sm btn-primary',
-text: '<i class="fa fa-copy"></i> ',
-title: 'Copy',
-exportOptions: {
-columns: ':visible'
-}
-}, {
-extend: 'print',
-className: 'btn btn-primary btn-sm',
-text: '<i class="fa fa-print"></i> ',
-title: 'Print',
-exportOptions: {
-columns: ':visible'
-}
-}, {
-text: '<i class="fa fa-file-text"></i> ',
-className: 'btn btn-primary btn-sm my-class',
-titleAttr: 'Export TXT',
-action: function (e, dt, node, config) {
-var data = dt.buttons.exportData();
-$.fn.dataTable.fileSave(new Blob([data.body.join("\n")]), 'table.txt');
-}
-}
-],
-"pagingType": "full_numbers" // Ajout de la pagination
-
-});
-
-$('button').mouseover(function () {
-var title = $(this).attr('title');
-$(this).attr('data-toggle', 'tooltip').attr('title', title).tooltip('show');
-}).mouseout(function () {
-$(this).attr('data-toggle', 'tooltip').attr('title', '').tooltip('hide');
-});
-});
-</script>
 
 
 {%endblock%}
